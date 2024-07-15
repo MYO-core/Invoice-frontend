@@ -99,14 +99,14 @@ const Users = () => {
   const onSearch = (value) => {
     setSearchValue(value);
   };
-  const handleStatusChange = (value) => {
-    setStatusChange(value);
+  const handleStatusChange = (event) => {
+    setStatusChange(event.target.value);
   };
 
   return (
     <>
       <PageHeader
-        title="Sudents"
+        title="Customers"
         routes={PageRoutes}
         className="flex items-center justify-between px-8 xl:px-[15px] pt-2 pb-6 sm:pb-[30px] bg-transparent sm:flex-col"
       />
@@ -116,8 +116,17 @@ const Users = () => {
             <Cards
               title={
                 <div className="flex items-center gap-4">
+                  {/* <div>
+                    <Input onKeyUp={handleStatusChange} placeholder="Search By Phone" />
+                  </div> */}
                   <div>
-                    <Search placeholder="Search" allowClear enterButton="Search" size="middle" onSearch={onSearch} />
+                    <Search
+                      placeholder="Name or Phone"
+                      allowClear
+                      enterButton="Search"
+                      size="middle"
+                      onSearch={onSearch}
+                    />
                   </div>
                 </div>
               }

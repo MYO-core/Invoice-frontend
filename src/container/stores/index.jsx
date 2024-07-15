@@ -142,7 +142,7 @@ const Users = () => {
         </Row>
       </GlobalUtilityStyle>
       <Modal
-        title={isAddUsers ? 'Add Invoice' : 'Edit Invoice'}
+        title={isAddUsers ? 'Add Store' : 'Edit Store'}
         destroyOnClose
         open={isAddUsers || isEditUsers.isOpen}
         width={1024}

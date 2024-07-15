@@ -6,7 +6,8 @@ const addStudent = async ({ body }) => {
 };
 
 const getAllStudent = async ({ start, limit, roleId, search }) => {
-  let roleQuery = roleId ? `&roleId=${roleId}` : '';
+  console.log(roleId);
+  let roleQuery = roleId ? `&phone=${roleId}` : '';
   let searchQuery = search ? `&search=${search}` : '';
   const response = await callApi.get(`/customers?start=${start || 0}&limit=${limit || 10}${roleQuery}${searchQuery}`);
   return response;

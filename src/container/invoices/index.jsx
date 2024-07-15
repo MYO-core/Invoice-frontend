@@ -162,7 +162,13 @@ const Users = () => {
                     />
                   </div>
                   <div>
-                    <Search placeholder="search" allowClear enterButton="Search" size="middle" onSearch={onSearch} />
+                    <Search
+                      placeholder="search name or phone"
+                      allowClear
+                      enterButton="Search"
+                      size="middle"
+                      onSearch={onSearch}
+                    />
                   </div>
                 </div>
               }
