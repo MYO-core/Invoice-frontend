@@ -1,0 +1,13 @@
+/* Calculator.css */
+
+.responsive-button {
+    height: 40px; /* Default height for all devices */
+  }
+  
+  /* Media query for larger devices */
+  @media (min-width: 768px) {
+    .responsive-button {
+      height: 60px; /* Adjust height for larger devices */
+    }
+  }
+  
