@@ -6,11 +6,11 @@ import { getItem, clearAll } from '../../utility/localStorageControl';
 const hostname = () => {
   let hostUrl = '';
   switch (window.location.hostname) {
-    case 'localhostd': // dev
-      hostUrl = 'https://ems-jw5i.onrender.com/api';
+    case 'localhost': // dev
+      hostUrl = 'http://localhost:4000/api/v1';
       break;
     default:
-      hostUrl = 'http://localhost:4000/api/v1';
+      hostUrl = 'https://invoice-backend-46sn.onrender.com/api/v1';
       break;
   }
   return hostUrl;
