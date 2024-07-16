@@ -136,8 +136,8 @@ const ThemeLayout = (WrappedComponent) => {
                         className="w-full max-w-[70px] xs:max-w-[60px]"
                         src={
                           layoutMode === 'lightMode'
-                            ? require(`../static/logo/logoNew.png`)
-                            : require(`../static/logo/logoNew.png`)
+                            ? require(`../static/logo/logoNew1.png`)
+                            : require(`../static/logo/logoNew1.png`)
                         }
                         alt=""
                       />

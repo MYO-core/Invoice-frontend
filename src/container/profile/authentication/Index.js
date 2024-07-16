@@ -22,7 +22,7 @@ const AuthLayout = (WraperContent) => {
                   maxWidth: '120px',
                 }}
                 className="dark:hidden"
-                src={require(`../../../static/logo/logoNew.png`)}
+                src={require(`../../../static/logo/logoNew1.png`)}
                 alt=""
               />
               <img
@@ -30,7 +30,7 @@ const AuthLayout = (WraperContent) => {
                   maxWidth: '120px',
                 }}
                 className="hidden dark:block"
-                src={require(`../../../static/logo/logoNew.png`)}
+                src={require(`../../../static/logo/logoNew1.png`)}
                 alt=""
               />
             </div>
