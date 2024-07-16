@@ -10,7 +10,7 @@ const hostname = () => {
       hostUrl = 'http://localhost:4000/api/v1';
       break;
     default:
-      hostUrl = 'https://invoice-backend-46sn.onrender.com/api/v1';
+      hostUrl = 'https://api.orgease.in/api/v1';
       break;
   }
   return hostUrl;

@@ -11,7 +11,7 @@ const hostname = () => {
       // hostUrl = 'https://myobackend.onrender.com/api/';
       break;
     default:
-      hostUrl = 'https://invoice-backend-46sn.onrender.com/api/v1';
+      hostUrl = 'https://api.orgease.in/api/v1';
       break;
   }
   return hostUrl;
