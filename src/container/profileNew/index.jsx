@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Form, Input, Upload, Spin, message } from 'antd';
+import { Row, Col, Form, Input, Upload, Spin, message, Select } from 'antd';
+import { useAtom } from 'jotai';
+import { UploadOutlined, EyeOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
 import { Button } from '../../components/buttons/buttons';
 
 import { PageHeader } from '../../components/page-headers/page-headers';
-import { Tag } from '../../components/tags/tags';
+import { uploadImage } from '../../utility/services/upload';
+
+import { currentUserData } from '../../globalStore/index';
 const { currentUser, updateUser } = require('../../utility/services/auth');
 
 function Profile() {
+  const [fileUrl, setFileUrl] = useState('');
+  const [userData, setUserData] = useAtom(currentUserData);
+
+  const [uploadLoading, setUploadLoading] = useState(false);
+
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const [state, setState] = useState({
-    tags: ['UI/UX', 'Branding', 'Product Design', 'Web Design'],
-    values: null,
-  });
-
   const handleSubmit = (values) => {
     const body = values;
-    // setState({ ...state, values: { ...values, tags: state.tags } });
-    updateUser(values)
+    body.profile_image = fileUrl;
+
+    updateUser(body)
       .then((res) => {
+        setUserData(res.data);
         message.success('Updated successfully');
       })
       .catch((err) => {
@@ -33,43 +39,33 @@ function Profile() {
     form.resetFields();
   };
 
-  const checked = (checke) => {
-    setState({ tags: checke });
-  };
-
   useEffect(() => {
     currentUser().then((data) => {
+      setFileUrl(data.data.profile_image);
       form.setFieldsValue(data.data);
     });
   }, []);
 
   const [imageUrl, setImageUrl] = useState('');
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  };
-
   const handleChange = (info) => {
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (imageUrl) => setImageUrl(imageUrl));
-    }
-  };
+    setUploadLoading(true);
 
-  const uploadButton = (
-    <div>
-      <Upload />
-      <div className="ant-upload-text">Upload</div>
-    </div>
-  );
+    const formData = new FormData();
+    formData.append('file', info.file.originFileObj);
+
+    uploadImage(formData)
+      .then((res) => {
+        console.log(res);
+        setFileUrl(res.data.link);
+        setFilesData((prev) => [...prev, { id: info.file.uid, file: info.file.originFileObj, name: res?.data?.name }]);
+        setUploadLoading(false);
+      })
+      .catch((err) => {
+        message.error('Error while uploading');
+        setUploadLoading(false);
+      });
+  };
 
   const PageRoutes = [
     {
@@ -92,6 +88,20 @@ function Profile() {
         />
         <div className="bg-white dark:bg-white10 m-0 p-0 mb-[25px] rounded-10 relative">
           <div className="p-[25px]">
+            <img src={fileUrl} style={{ width: '200px', borderRadius: '30%' }} />
+            <Row gutter={16} className="ml-2">
+              <Spin spinning={uploadLoading}>
+                <Col span={12}>
+                  <Form.Item>
+                    <Upload onChange={handleChange} fileList={[]}>
+                      <Button className="flex items-center" icon={<UploadOutlined />}>
+                        Click to Upload
+                      </Button>
+                    </Upload>
+                  </Form.Item>
+                </Col>
+              </Spin>
+            </Row>
             <Row justify="space-between">
               <Col xxl={24} lg={24} xs={24}>
                 <Form
@@ -108,6 +118,12 @@ function Profile() {
                         name="name"
                         label="Name"
                         className="mb-4 form-label-w-full form-label-text-start dark:text-white-60"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Required! ',
+                          },
+                        ]}
                       >
                         <Input />
                       </Form.Item>
@@ -117,6 +133,12 @@ function Profile() {
                         name="phone"
                         label="Phone Number"
                         className="mb-4 form-label-w-full form-label-text-start"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Required! ',
+                          },
+                        ]}
                       >
                         <Input />
                       </Form.Item>
@@ -129,6 +151,12 @@ function Profile() {
                         initialValue=""
                         label="Email"
                         className="mb-4 form-label-w-full form-label-text-start"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Required! ',
+                          },
+                        ]}
                       >
                         <Input />
                       </Form.Item>
@@ -144,81 +172,54 @@ function Profile() {
                       </Form.Item>
                     </Col>
                   </Row>
-                  {/* <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item
-                      name="company"
-                      initialValue="Example"
-                      label="Company Name"
-                      className="mb-4 form-label-w-full form-label-text-start"
-                    >
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item
-                      name="website"
-                      initialValue="www.example.com"
-                      label="Website"
-                      className="mb-4 form-label-w-full form-label-text-start"
-                    >
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                </Row> */}
                   <Row gutter={16}>
-                    {/* <Col span={12}>
-                    <Form.Item
-                      name="userBio"
-                      initialValue="Nam malesuada dolor tellus pretium amet was hendrerit facilisi id vitae enim sed ornare there suspendisse sed orci neque ac sed aliquet risus faucibus in pretium molestee."
-                      label="User Bio"
-                      className="mb-4 form-label-w-full form-label-text-start"
-                    >
-                      <Input.TextArea rows={3} />
-                    </Form.Item>
-                  </Col> */}
                     <Col span={12}>
-                      <Form.Item
-                        name="profile_image"
-                        label="User Image"
-                        className="mb-4 form-label-w-full form-label-text-start"
-                      >
-                        <Upload
-                          name="profile_image"
-                          listType="picture-card"
-                          className="avatar-uploader"
-                          showUploadList={false}
-                          beforeUpload={() => {}} // Add your validation logic here
-                          onChange={() => {}} // Add your image upload logic here
-                        >
-                          {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-                        </Upload>
+                      <Form.Item label="Father's Name" name="fatherName">
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="Mother's Name" name="motherName">
+                        <Input />
                       </Form.Item>
                     </Col>
                   </Row>
-                  {/* <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item name="skills" label="Skills" className="mb-4 form-label-w-full form-label-text-start">
-                      <div className="p-3 border border-gray-200 dark:border-white10 rounded-md [&>div>div>span>.ant-tag]:inline-flex [&>div>div>span>.ant-tag]:items-center">
-                        <Tag className="bg-primary" animate onChange={checked} data={state.tags} />
-                      </div>
-                    </Form.Item>
-                  </Col>
-                </Row> */}
-                  <div className="flex justify-end gap-2 mt-2">
-                    <Button size="default" htmlType="submit" type="primary" className="h-11 px-[20px] font-semibold">
-                      Update Profile
-                    </Button>
-                    &nbsp; &nbsp;
-                    <Button
-                      size="default"
-                      onClick={handleCancel}
-                      type="light"
-                      className="h-11 px-[20px] bg-regularBG dark:bg-white10 text-body dark:text-white87 font-semibold border-regular dark:border-white10"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item name="gender" label="Gender">
+                        <Select
+                          placeholder="Select option..."
+                          // onChange={onGenderChange}
+                          allowClear
+                        >
+                          <Option value="male">Male</Option>
+                          <Option value="female">Female</Option>
+                          <Option value="other">Others</Option>
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="address" label="Address">
+                        <Input />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Spin spinning={uploadLoading}>
+                    <div className="flex justify-end gap-2 mt-2">
+                      <Button size="default" htmlType="submit" type="primary" className="h-11 px-[20px] font-semibold">
+                        Update Profile
+                      </Button>
+                      &nbsp; &nbsp;
+                      <Button
+                        size="default"
+                        onClick={handleCancel}
+                        type="light"
+                        className="h-11 px-[20px] bg-regularBG dark:bg-white10 text-body dark:text-white87 font-semibold border-regular dark:border-white10"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </Spin>
                 </Form>
               </Col>
             </Row>

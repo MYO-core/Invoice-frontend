@@ -4,14 +4,16 @@ import UilDollarSign from '@iconscout/react-unicons/icons/uil-dollar-sign';
 import UilSetting from '@iconscout/react-unicons/icons/uil-setting';
 import UilSignout from '@iconscout/react-unicons/icons/uil-signout';
 import UilUser from '@iconscout/react-unicons/icons/uil-user';
-import UilUsersAlt from '@iconscout/react-unicons/icons/uil-users-alt';
 import { Avatar } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
 import Search from './Search';
 // import Message from './Message';
 import Notification from './Notification';
+import { currentUserData } from '../../../globalStore/index';
+import { currentUser } from '../../../utility/services/auth';
 // import Settings from './settings';
 import { Popover } from '../../popup/popup';
 import Heading from '../../heading/heading';
@@ -19,8 +21,8 @@ import { logOut } from '../../../redux/authentication/actionCreator';
 import { clearAll } from '../../../utility/localStorageControl';
 
 const AuthInfo = React.memo(() => {
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.currentUser.data);
+  const [userData, setUserData] = useAtom(currentUserData);
+
   const navigate = useNavigate();
 
   const SignOut = (e) => {
@@ -28,6 +30,12 @@ const AuthInfo = React.memo(() => {
     clearAll();
     window.location.replace('/');
   };
+  useEffect(() => {
+    currentUser().then((res) => {
+      let data = res.data;
+      setUserData(data);
+    });
+  }, []);
 
   const userContent = (
     <div>
@@ -96,9 +104,9 @@ const AuthInfo = React.memo(() => {
       <div className="flex ltr:ml-1 rtl:mr-1 ltr:mr-2 rtl:ml-2 ssm:mr-0 ssm:rtl:ml-0">
         <Popover placement="bottomRight" content={userContent} action="click">
           <Link to="#" className="flex items-center text-light whitespace-nowrap">
-            <Avatar src="https://cdn0.iconfinder.com/data/icons/user-pictures/100/matureman1-512.png" />
+            <Avatar src={userData.profile_image} />
             <span className="ltr:mr-1.5 rtl:ml-1.5 ltr:ml-2.5 rtl:mr-2.5 text-body dark:text-white60 text-sm font-medium md:hidden">
-              {currentUser.name}
+              {userData.name}
             </span>
             <UilAngleDown className="w-4 h-4 ltr:md:ml-[5px] rtl:md:mr-[5px]" />
           </Link>
