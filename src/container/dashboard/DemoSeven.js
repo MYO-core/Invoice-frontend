@@ -1,13 +1,7 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { Row, Col, Skeleton, Statistic, Card } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Card, Statistic } from 'antd';
 import { PageHeader } from '../../components/page-headers/page-headers';
-import { Cards } from '../../components/cards/frame/cards-frame';
 
-const OverviewDataList = lazy(() => import('./overview/demoSeven/OverviewDataList'));
-const SaleRevenue = lazy(() => import('./overview/demoTwo/SaleRevenue'));
-const NewProduct = lazy(() => import('./overview/demoTwo/NewProduct'));
-const RevenueGenerated = lazy(() => import('./overview/demoSeven/RevenueGenerated'));
-const BestSeller = lazy(() => import('./overview/demoTwo/BestSeller'));
 const { getStats } = require('../../utility/services/stats');
 
 function DemoSeven() {
@@ -28,17 +22,20 @@ function DemoSeven() {
     setLoading(true);
     getStats()
       .then((res) => {
-        const data = res.data;
-
-        setData(data);
-
+        if (res && res.data) {
+          setData(res.data);
+        } else {
+          console.error('Invalid response data:', res);
+          setData({});
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.log('err', err);
+        console.error('Error fetching stats:', err);
         setLoading(false);
       });
   }, []);
+
   return (
     <>
       <PageHeader
@@ -58,7 +55,7 @@ function DemoSeven() {
             <Card>
               <Statistic
                 title="Total Sales"
-                value={data.total_sales || 0}
+                value={data?.total_sales || 0}
                 precision={2}
                 valueStyle={{ color: '#cf1322' }}
                 prefix="₹"
@@ -67,12 +64,12 @@ function DemoSeven() {
           </Col>
           <Col xs={24} sm={12} md={6}>
             <Card>
-              <Statistic title="Total Users" value={data.user_count || 0} valueStyle={{ color: '#3f8600' }} />
+              <Statistic title="Total Users" value={data?.user_count || 0} valueStyle={{ color: '#3f8600' }} />
             </Card>
           </Col>
           <Col xs={24} sm={12} md={6}>
             <Card>
-              <Statistic title="Invoice Generated" value={data.invoice_count || 0} valueStyle={{ color: '#3f8600' }} />
+              <Statistic title="Invoice Generated" value={data?.invoice_count || 0} valueStyle={{ color: '#3f8600' }} />
             </Card>
           </Col>
         </Row>
