@@ -51,7 +51,7 @@ const AddOrder = ({ setIsAddUsers, isEditUsers, setIsEditUsers, getAllUsers, sto
         .then((res) => {
           setIsEditUsers({ isOpen: false, userId: '' });
           getAllUsers();
-          message.success('Invoice updated successfully');
+          message.success('Bill updated successfully');
           setLoading(false);
         })
         .catch((err) => {
@@ -63,7 +63,7 @@ const AddOrder = ({ setIsAddUsers, isEditUsers, setIsEditUsers, getAllUsers, sto
         body: body,
       })
         ?.then((res) => {
-          message.success('Invoice added successfully');
+          message.success('Bill added successfully');
           setIsAddUsers(false);
           getAllUsers({ start: 0, limit: 10 });
           setLoading(false);

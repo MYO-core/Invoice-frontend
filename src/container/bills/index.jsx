@@ -27,7 +27,7 @@ const Users = () => {
     },
     {
       path: '/invoices',
-      breadcrumbName: 'Invoices',
+      breadcrumbName: 'Bill',
     },
   ];
 
@@ -140,7 +140,7 @@ const Users = () => {
   return (
     <>
       <PageHeader
-        title="Invoices"
+        title="Bills"
         routes={PageRoutes}
         className="flex items-center justify-between px-8 xl:px-[15px] pt-2 pb-6 sm:pb-[30px] bg-transparent sm:flex-col"
       />
@@ -192,7 +192,7 @@ const Users = () => {
         </Row>
       </GlobalUtilityStyle>
       <Modal
-        title={isAddUsers ? 'Add Invoice' : 'Edit Invoice'}
+        title={isAddUsers ? 'Add Bill' : 'Edit Bill'}
         destroyOnClose
         open={isAddUsers || isEditUsers.isOpen}
         width={1024}

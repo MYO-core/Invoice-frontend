@@ -96,10 +96,10 @@ function MenuItems({ toggleCollapsed }) {
       !topMenu && <UilLayerGroup />,
     ),
     getItem(
-      <NavLink onClick={toggleCollapsed} to={'/invoices'}>
-        {t('invoices')}
+      <NavLink onClick={toggleCollapsed} to={'/bills'}>
+        {t('bills')}
       </NavLink>,
-      'invoices',
+      'bills',
       !topMenu && <UilDocumentLayoutLeft />,
     ),
     // getItem(<span>{t(' store setup')}</span>, 'stores', !topMenu && <UilUsersAlt />, [
