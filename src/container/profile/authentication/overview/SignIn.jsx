@@ -76,6 +76,9 @@ function SignIn() {
                 <NavLink className=" text-primary text-13" to="/forgotPassword">
                   Forgot password?
                 </NavLink>
+                <NavLink className=" text-primary text-13" to="/register">
+                  register
+                </NavLink>
               </div>
               <Form.Item>
                 <Button

@@ -26,6 +26,12 @@ const Cms = () => {
 
   const columns = [
     {
+      title: '#Id',
+      dataIndex: 'id',
+      key: 'id',
+      width: 140,
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
@@ -103,7 +109,7 @@ const Cms = () => {
               border={false}
               size="default"
             >
-              <Table scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allCms} />
+              <Table size="small" scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allCms} />
             </Cards>
           </Col>
         </Row>
