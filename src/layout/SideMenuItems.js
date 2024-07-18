@@ -6,6 +6,7 @@ import {
   UilUsersAlt,
   UilMap,
   UilAirplay,
+  UilDatabase,
 } from '@iconscout/react-unicons';
 
 import { Menu } from 'antd';
@@ -89,6 +90,13 @@ function MenuItems({ toggleCollapsed }) {
       !topMenu && <UilUsersAlt />,
     ),
     getItem(
+      <NavLink onClick={toggleCollapsed} to={'/products'}>
+        {t('products')}
+      </NavLink>,
+      'products',
+      !topMenu && <UilDatabase />,
+    ),
+    getItem(
       <NavLink onClick={toggleCollapsed} to={'/customers'}>
         {t('customers')}
       </NavLink>,
@@ -97,9 +105,9 @@ function MenuItems({ toggleCollapsed }) {
     ),
     getItem(
       <NavLink onClick={toggleCollapsed} to={'/bills'}>
-        {t('bills')}
+        {t('billings')}
       </NavLink>,
-      'bills',
+      'billings',
       !topMenu && <UilDocumentLayoutLeft />,
     ),
     // getItem(<span>{t(' store setup')}</span>, 'stores', !topMenu && <UilUsersAlt />, [
