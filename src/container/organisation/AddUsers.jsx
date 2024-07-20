@@ -111,7 +111,7 @@ const AddOrder = ({ setIsAddUsers, isEditUsers, setIsEditUsers, getAllUsers }) =
             </Col>
             <Col span={12}>
               <Form.Item
-                label="stregnth"
+                label="Stregnth"
                 name="stregnth"
                 rules={[
                   {

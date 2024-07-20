@@ -14,5 +14,9 @@ const loginUser = async (body) => {
   const response = await callApi.post('/auth/login', body);
   return response;
 };
+const register = async (body) => {
+  const response = await callApi.post('/auth/register', body);
+  return response;
+};
 
-export { currentUser, loginUser, updateUser };
+export { currentUser, loginUser, updateUser, register };
