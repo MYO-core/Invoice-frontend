@@ -19,7 +19,7 @@ function ContactTable() {
   };
   const getContactUsFun = () => {
     getContactUs({ start, limit, keyword }).then((res) => {
-      setGetContactUsData(res?.data);
+      setGetContactUsData([]);
     });
   };
   useEffect(() => {

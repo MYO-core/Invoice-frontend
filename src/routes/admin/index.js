@@ -7,7 +7,7 @@ import withAdminLayout from '../../layout/withAdminLayout';
 // const Dashboard = lazy(() => import('../../container/dashboard'));
 const DemoEight = lazy(() => import('../../container/dashboard/DemoSeven'));
 const Roles = lazy(() => import('../../container/roles'));
-const Cms = lazy(() => import('../../container/cms'));
+const Cms = lazy(() => import('../../container/project/ProjectCreate'));
 const Orders = lazy(() => import('../../container/orders'));
 const Users = lazy(() => import('../../container/usersNew'));
 const Status = lazy(() => import('../../container/status'));
