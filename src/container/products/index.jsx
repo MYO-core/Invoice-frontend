@@ -10,6 +10,8 @@ import { deleteCms, getAllCms } from '../../utility/services/products';
 
 const Cms = () => {
   const [isAddCms, setisAddCms] = useState(false);
+  const [start, setStart] = useState(0);
+
   const [isEditCms, setIsEditCms] = useState({ isOpen: false, cmsId: '' });
   const [allCms, setAllCms] = useState([]);
 
@@ -77,7 +79,7 @@ const Cms = () => {
   ];
 
   const getAllData = () => {
-    getAllCms({})
+    getAllCms({ start, limit: 10 })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);

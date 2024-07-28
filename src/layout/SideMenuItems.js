@@ -104,6 +104,20 @@ function MenuItems({ toggleCollapsed }) {
       !topMenu && <UilLayerGroup />,
     ),
     getItem(
+      <NavLink onClick={toggleCollapsed} to={'/components'}>
+        {t('components')}
+      </NavLink>,
+      'components',
+      !topMenu && <UilLayerGroup />,
+    ),
+    getItem(
+      <NavLink onClick={toggleCollapsed} to={'/packages'}>
+        {t('packages')}
+      </NavLink>,
+      'packages',
+      !topMenu && <UilLayerGroup />,
+    ),
+    getItem(
       <NavLink onClick={toggleCollapsed} to={'/bills'}>
         {t('billings')}
       </NavLink>,
