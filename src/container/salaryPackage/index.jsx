@@ -1,81 +1,123 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Modal, Carousel, Select, Input, Popconfirm, message } from 'antd';
-
-import { Space, Table, Tag } from 'antd';
-import AddRoom from './AddStatus';
+import { Row, Col, Button, Table, Modal, Space, Popconfirm, message, Select, Input } from 'antd';
+import AddUsers from './AddUsers';
 import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
-import { deleteCourse, getAllCourse } from '../../utility/services/salaryComponents';
+import { getAllUser, deleteUser } from '../../utility/services/users';
+import { getAllRoles } from '../../utility/services/roles';
 
 const { Search } = Input;
 
-const Rooms = () => {
-  const [totalCount, setTotalCount] = useState(0);
-  const [start, setStart] = useState(0);
-  const [isAddRoom, setisAddRoom] = useState(false);
-  const [isEditRoom, setIsEditRoom] = useState({ isOpen: false, courseId: '' });
-  const [allRooms, setAllRooms] = useState([]);
+const Users = () => {
+  const [allUsers, setAllUsers] = useState([]);
+  const [allRoles, setAllRoles] = useState([]);
+  const [isAddUsers, setIsAddUsers] = useState(false);
+  const [isEditUsers, setIsEditUsers] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [statusChange, setStatusChange] = useState('');
-
   const PageRoutes = [
     {
       path: '/',
       breadcrumbName: 'Dashboard',
     },
     {
-      path: '/component',
-      breadcrumbName: 'Component',
+      path: '/users',
+      breadcrumbName: 'Users',
     },
   ];
 
+  const fetchRolesForFilter = () => {
+    getAllRoles({})
+      .then((res) => {
+        const data = res?.data?.data;
+        let dd = [{ value: '', label: 'All' }];
+        data.map((obj) => {
+          dd.push({
+            value: obj.id,
+            label: obj.name,
+          });
+        });
+        setAllRoles(dd);
+      })
+      .catch((error) => {
+        message.error('Error fetching room suggestions');
+        // setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchRolesForFilter();
+  }, []);
+
+  const getAllUsers = () => {
+    getAllUser({ search: searchValue, roleId: statusChange })
+      .then((res) => {
+        if (res) {
+          setAllUsers(res?.data?.rows);
+        }
+      })
+      .catch((err) => console.log('err', err));
+  };
+
+  useEffect(() => {
+    getAllUsers();
+  }, [searchValue, statusChange]);
   const columns = [
-    {
-      title: '#Id',
-      dataIndex: 'id',
-      key: 'id',
-      width: 140,
-    },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      width: 140,
+      width: 150,
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
-      width: 140,
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      width: 200,
     },
     {
-      title: 'pay Amount',
-      dataIndex: 'pay_amount',
-      key: 'pay_amount',
-      width: 140,
+      title: "Father's Name",
+      dataIndex: 'fatherName',
+      key: 'fatherName',
+      width: 150,
+    },
+    {
+      title: "Mother's Name",
+      dataIndex: 'motherName',
+      key: 'otherName',
+      width: 150,
+    },
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
+      width: 150,
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+      width: 150,
     },
     {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button size="middle" onClick={() => setIsEditRoom({ isOpen: true, courseId: record?.id })}>
+          <Button size="middle" onClick={() => setIsEditUsers({ isOpen: true, userId: record?.id })}>
             Edit
           </Button>
           <Popconfirm
-            title="Are you sure to delete this ?"
+            title="Are you sure to delete this User?"
             onConfirm={() => {
-              deleteCourse({ id: record?.id })
+              deleteUser({ id: record?._id })
                 .then((res) => {
-                  console.log('res', res);
-                  message.success('Component Deleted Successfully');
-                  getAllRoomList();
+                  // console.log('res', res);
+                  message.success('User Deleted Successfully');
+                  getAllUsers();
                 })
-                .catch((err) => {
-                  console.log('err', err);
-                  message.error('Something Went Wrong');
-                });
+                .catch((err) => console.log('err', err));
             }}
             okText="Yes"
             cancelText="No"
@@ -90,91 +132,74 @@ const Rooms = () => {
     },
   ];
 
-  const getAllRoomList = () => {
-    getAllCourse({ start, limit: 10, search: searchValue })
-      .then((res) => {
-        if (res) {
-          setAllRooms(res?.data?.rows);
-        }
-      })
-      .catch((err) => console.log('err', err));
-  };
-
-  useEffect(() => {
-    getAllRoomList();
-  }, [searchValue, statusChange]);
-
   const onSearch = (value) => {
     setSearchValue(value);
   };
-
   const handleStatusChange = (value) => {
     setStatusChange(value);
-  };
-  const handlePaginationChange = (pageNumber) => {
-    let start = (pageNumber - 1) * 10;
-    setStart(start);
   };
 
   return (
     <>
       <PageHeader
-        title="Salary Components"
+        title="Users"
         routes={PageRoutes}
         className="flex items-center justify-between px-8 xl:px-[15px] pt-2 pb-6 sm:pb-[30px] bg-transparent sm:flex-col"
       />
-      <GlobalUtilityStyle className="p-3">
+      <GlobalUtilityStyle className="p-3  ">
         <Row gutter={16}>
-          <Col sm={24} xs={24} lg={24} className="">
+          <Col>
             <Cards
               title={
                 <div className="flex items-center gap-4">
                   <div>
-                    <Search placeholder="Search" allowClear enterButton="Search" size="middle" onSearch={onSearch} />
+                    <Select
+                      style={{
+                        width: 120,
+                      }}
+                      size="middle"
+                      placeholder="Role"
+                      onChange={handleStatusChange}
+                      options={allRoles}
+                    />
+                  </div>
+                  <div>
+                    <Search placeholder="search" allowClear enterButton="Search" size="middle" onSearch={onSearch} />
                   </div>
                 </div>
               }
               moreBtn={
-                <Button type="primary" onClick={() => setisAddRoom(true)}>
+                <Button type="primary" onClick={() => setIsAddUsers(true)}>
                   Add
                 </Button>
               }
-              // title="Rooms"
-              border={false}
-              size="default"
             >
-              <Table
-                size="small"
-                scroll={{ x: '100%', y: 'auto' }}
-                columns={columns}
-                dataSource={allRooms}
-                pagination={{ total: totalCount, onChange: handlePaginationChange }}
-              />
+              <Table size="small" scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allUsers} />
             </Cards>
           </Col>
         </Row>
       </GlobalUtilityStyle>
-
       <Modal
-        title={`${isAddRoom ? 'Add Component' : 'Edit Component'}`}
+        title={isAddUsers ? 'Add Users' : 'Edit Users'}
         destroyOnClose
-        open={isAddRoom || isEditRoom.isOpen}
+        open={isAddUsers || isEditUsers.isOpen}
+        width={1024}
+        // onOk={handleAddCmss}
         footer={false}
         onCancel={() => {
-          setisAddRoom(false);
-          setIsEditRoom({ isOpen: false, courseId: '' });
+          setIsAddUsers(false);
+          setIsEditUsers({ isOpen: false, userId: null });
         }}
       >
-        <AddRoom
-          setisAddStatus={setisAddRoom}
-          isEditStatus={isEditRoom}
-          setIsEditStatus={setIsEditRoom}
-          getAllStatusList={getAllRoomList}
-          allRooms={allRooms}
+        <AddUsers
+          setIsAddUsers={setIsAddUsers}
+          getAllUsers={getAllUsers}
+          isEditUsers={isEditUsers}
+          setIsEditUsers={setIsEditUsers}
         />
       </Modal>
     </>
   );
 };
 
-export default Rooms;
+export default Users;

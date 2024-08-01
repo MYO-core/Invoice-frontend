@@ -8,7 +8,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const AddStatus = ({ setisAddStatus, isEditStatus, setIsEditStatus, getAllStatusList, allRooms }) => {
-  const [fractionOptions, setFractionOptions] = useState(allRooms || []);
+  const [fractionOptions, setFractionOptions] = useState([]);
   const [isPreviewModal, setIsPreviewModal] = useState(false);
   const [previewTitle, setPreviewTitle] = useState();
   const [loading, setLoading] = useState(false);
@@ -46,20 +46,19 @@ const AddStatus = ({ setisAddStatus, isEditStatus, setIsEditStatus, getAllStatus
         });
     }
   };
-  const fetchValue = (value) => {
-    if (!value || value === '') {
-      setFractionOptions(allRooms);
-      return;
-    }
-    getAllCourse({ start: 0, limit: 10, search: value })
+  const fetchValue = () => {
+    getAllCourse({ start: 0, limit: 1, is_basic: true })
       .then((res) => {
         if (res) {
           setFractionOptions(res?.data?.rows);
-          console.log(fractionOptions);
+          // console.log(fractionOptions);
         }
       })
       .catch((err) => console.log('err', err));
   };
+  useEffect(() => {
+    fetchValue();
+  }, []);
 
   useEffect(() => {
     // populate single Status data
@@ -204,8 +203,8 @@ const AddStatus = ({ setisAddStatus, isEditStatus, setIsEditStatus, getAllStatus
                     ]}
                   >
                     <Select
-                      showSearch
-                      onSearch={(value) => fetchValue(value)}
+                      // showSearch
+                      // onSearch={(value) => fetchValue(value)}
                       placeholder="Select percentage of"
                       filterOption={false}
                     >
