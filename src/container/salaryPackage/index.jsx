@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Table, Modal, Space, Popconfirm, message, Select, Input } from 'antd';
-import AddUsers from './AddUsers';
+import React, { useEffect, useState, Suspense } from 'react';
+import { Row, Col, Button, Table, Modal, Space, Popconfirm, message, Select, Input, Spin } from 'antd';
+import { Route, Routes, NavLink } from 'react-router-dom';
+// import AddUsers from './AddUsers';
+import AddPackage from './AddPackage';
 import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
-import { getAllUser, deleteUser } from '../../utility/services/users';
+import { getAllUser, deleteUser } from '../../utility/services/salaryPackage';
 import { getAllRoles } from '../../utility/services/roles';
 
 const { Search } = Input;
@@ -65,41 +67,30 @@ const Users = () => {
   }, [searchValue, statusChange]);
   const columns = [
     {
+      title: '#ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 150,
+    },
+    {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
       width: 150,
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: 'Mentioned CTC',
+      dataIndex: 'ctc',
+      key: 'ctc',
       width: 200,
     },
     {
-      title: "Father's Name",
-      dataIndex: 'fatherName',
-      key: 'fatherName',
+      title: 'Cost To Company',
+      dataIndex: 'cost_to_company',
+      key: 'cost_to_company',
       width: 150,
     },
-    {
-      title: "Mother's Name",
-      dataIndex: 'motherName',
-      key: 'otherName',
-      width: 150,
-    },
-    {
-      title: 'Gender',
-      dataIndex: 'gender',
-      key: 'gender',
-      width: 150,
-    },
-    {
-      title: 'Role',
-      dataIndex: 'role',
-      key: 'role',
-      width: 150,
-    },
+
     {
       title: 'Action',
       key: 'action',
@@ -109,7 +100,7 @@ const Users = () => {
             Edit
           </Button>
           <Popconfirm
-            title="Are you sure to delete this User?"
+            title="Are you sure to delete this ?"
             onConfirm={() => {
               deleteUser({ id: record?._id })
                 .then((res) => {
@@ -141,6 +132,17 @@ const Users = () => {
 
   return (
     <>
+      <Suspense
+        fallback={
+          <div className="spin flex items-center justify-center bg-white dark:bg-dark h-screen w-full fixed z-[999] ltr:left-0 rtl:right-0 top-0">
+            <Spin />
+          </div>
+        }
+      >
+        <Routes>
+          <Route index path="/add" element={<AddPackage />} /> //dashboard
+        </Routes>
+      </Suspense>
       <PageHeader
         title="Users"
         routes={PageRoutes}
@@ -169,8 +171,8 @@ const Users = () => {
                 </div>
               }
               moreBtn={
-                <Button type="primary" onClick={() => setIsAddUsers(true)}>
-                  Add
+                <Button type="primary">
+                  <NavLink to="./add">Add</NavLink>
                 </Button>
               }
             >
@@ -191,12 +193,13 @@ const Users = () => {
           setIsEditUsers({ isOpen: false, userId: null });
         }}
       >
-        <AddUsers
+        {/* <AddUsers
           setIsAddUsers={setIsAddUsers}
           getAllUsers={getAllUsers}
           isEditUsers={isEditUsers}
           setIsEditUsers={setIsEditUsers}
-        />
+        /> */}
+        <AddPackage />
       </Modal>
     </>
   );

@@ -17,7 +17,7 @@ const Subject = lazy(() => import('../../container/subject'));
 const Organisation = lazy(() => import('../../container/organisation'));
 const Bills = lazy(() => import('../../container/bills'));
 const Components = lazy(() => import('../../container/salaryComponents'));
-const Packages = lazy(() => import('../../container/salaryPackage/AddPackage'));
+const Packages = lazy(() => import('../../container/salaryPackage/index'));
 const Products = lazy(() => import('../../container/products'));
 const Stores = lazy(() => import('../../container/stores'));
 const CustomerNew = lazy(() => import('../../container/customerNew'));

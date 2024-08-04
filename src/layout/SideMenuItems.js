@@ -61,89 +61,78 @@ function MenuItems({ toggleCollapsed }) {
       'dashboard',
       !topMenu && <UilChartBar />,
     ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/company'}>
-        {t('company')}
-      </NavLink>,
-      'company',
-      !topMenu && <UilMap />,
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/stores'}>
-        {t('stores')}
-      </NavLink>,
-      'stores',
-      !topMenu && <UilShoppingCart />,
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/roles'}>
-        {t('roles')}
-      </NavLink>,
-      'roles',
-      !topMenu && <UilAirplay />,
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/users'}>
-        {t('users')}
-      </NavLink>,
-      'users',
-      !topMenu && <UilUsersAlt />,
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/products'}>
-        {t('products')}
-      </NavLink>,
-      'products',
-      !topMenu && <UilDatabase />,
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/customers'}>
-        {t('customers')}
-      </NavLink>,
-      'customers',
-      !topMenu && <UilLayerGroup />,
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/components'}>
-        {t('components')}
-      </NavLink>,
-      'components',
-      !topMenu && <UilLayerGroup />,
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/packages'}>
-        {t('packages')}
-      </NavLink>,
-      'packages',
-      !topMenu && <UilLayerGroup />,
-    ),
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/bills'}>
-        {t('billings')}
-      </NavLink>,
-      'billings',
-      !topMenu && <UilDocumentLayoutLeft />,
-    ),
-    // getItem(<span>{t(' store setup')}</span>, 'stores', !topMenu && <UilUsersAlt />, [
-    //   getItem(
-    //     <NavLink onClick={toggleCollapsed} to={'/company'}>
-    //       {t('company')}
-    //     </NavLink>,
-    //     'company',
-    //   ),
-    //   getItem(
-    //     <NavLink onClick={toggleCollapsed} to={'/stores'}>
-    //       {t('stores')}
-    //     </NavLink>,
-    //     'stores',
-    //   ),
-    //   getItem(
-    //     <NavLink onClick={toggleCollapsed} to={'/users'}>
-    //       {t('users')}
-    //     </NavLink>,
-    //     'users',
-    //   ),
-    // ]),
+
+    getItem(<>{t(' Admin')}</>, 'admin', !topMenu && <UilAirplay />, [
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/company'}>
+          {t('company')}
+        </NavLink>,
+        'company',
+        !topMenu && <UilMap />,
+      ),
+
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/roles'}>
+          {t('roles')}
+        </NavLink>,
+        'roles',
+        !topMenu && <UilAirplay />,
+      ),
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/users'}>
+          {t('users')}
+        </NavLink>,
+        'users',
+        !topMenu && <UilUsersAlt />,
+      ),
+    ]),
+
+    getItem(<>{t('Inventory')}</>, 'Store', !topMenu && <UilShoppingCart />, [
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/stores'}>
+          {t('stores')}
+        </NavLink>,
+        'stores',
+        !topMenu && <UilShoppingCart />,
+      ),
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/products'}>
+          {t('products')}
+        </NavLink>,
+        'products',
+        !topMenu && <UilDatabase />,
+      ),
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/customers'}>
+          {t('customers')}
+        </NavLink>,
+        'customers',
+        !topMenu && <UilLayerGroup />,
+      ),
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/bills'}>
+          {t('billings')}
+        </NavLink>,
+        'billings',
+        !topMenu && <UilDocumentLayoutLeft />,
+      ),
+    ]),
+    getItem(<>{t(' Payrol')}</>, 'payroll', !topMenu && <UilLayerGroup />, [
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/components'}>
+          {t('components')}
+        </NavLink>,
+        'components',
+        !topMenu && <UilLayerGroup />,
+      ),
+      getItem(
+        <NavLink onClick={toggleCollapsed} to={'/packages'}>
+          {t('packages')}
+        </NavLink>,
+        'packages',
+        !topMenu && <UilLayerGroup />,
+      ),
+    ]),
   ];
 
   return (
