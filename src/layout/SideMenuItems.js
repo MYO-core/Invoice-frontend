@@ -1,14 +1,3 @@
-import {
-  UilChartBar,
-  UilShoppingCart,
-  UilDocumentLayoutLeft,
-  UilLayerGroup,
-  UilUsersAlt,
-  UilMap,
-  UilAirplay,
-  UilDatabase,
-} from '@iconscout/react-unicons';
-
 import { Menu } from 'antd';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,119 +9,133 @@ import propTypes from 'prop-types';
 function MenuItems({ toggleCollapsed }) {
   const { t } = useTranslation();
 
-  function getItem(label, key, icon, children, type) {
-    return {
-      key,
-      icon,
-      children,
-      label,
-      type,
-    };
-  }
-
-  const { topMenu } = useSelector((state) => {
-    return {
-      topMenu: state.ChangeLayoutMode.topMenu,
-    };
-  });
+  const { topMenu } = useSelector((state) => ({
+    topMenu: state.ChangeLayoutMode.topMenu,
+  }));
 
   const pathName = window.location.pathname;
-  const pathArray = pathName || [];
-  const mainPath = pathArray;
-  const mainPathSplit = mainPath.split('/');
+  const mainPathSplit = pathName.split('/');
 
   const [openKeys, setOpenKeys] = React.useState(
     !topMenu ? [`${mainPathSplit.length > 1 ? [mainPathSplit[1]] : 'dashboard'}`] : [],
   );
 
   const onOpenChange = (keys) => {
-    setOpenKeys(keys[keys.length - 1] !== 'recharts' ? [keys.length && keys[keys.length - 1]] : keys);
+    setOpenKeys(keys[keys.length - 1] !== 'recharts' ? [keys[keys.length - 1]] : keys);
   };
 
-  const onClick = (item) => {
-    if (item.keyPath.length === 1) setOpenKeys([]);
+  const onClick = () => {
+    setOpenKeys([]);
   };
 
   const items = [
-    getItem(
-      <NavLink onClick={toggleCollapsed} to={'/dashboard'}>
-        {t('dashboard')}
-      </NavLink>,
-      'dashboard',
-      !topMenu && <UilChartBar />,
-    ),
+    {
+      label: (
+        <NavLink onClick={toggleCollapsed} to={'/dashboard'}>
+          {t('dashboard')}
+        </NavLink>
+      ),
+      key: 'dashboard',
+    },
+    {
+      label: t('Admin'),
+      key: 'admin',
+      children: [
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/company'}>
+              {t('company')}
+            </NavLink>
+          ),
+          key: 'company',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/roles'}>
+              {t('roles')}
+            </NavLink>
+          ),
+          key: 'roles',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/users'}>
+              {t('users')}
+            </NavLink>
+          ),
+          key: 'users',
+        },
+      ],
+    },
+    {
+      label: t('Inventory'),
+      key: 'Store',
+      children: [
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/stores'}>
+              {t('stores')}
+            </NavLink>
+          ),
+          key: 'stores',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/products'}>
+              {t('products')}
+            </NavLink>
+          ),
+          key: 'products',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/customers'}>
+              {t('customers')}
+            </NavLink>
+          ),
+          key: 'customers',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/bills'}>
+              {t('billings')}
+            </NavLink>
+          ),
+          key: 'billings',
+        },
+      ],
+    },
+    {
+      label: t('Bookings'),
+      key: 'Book',
+      children: [
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/customers'}>
+              {t('customers')}
+            </NavLink>
+          ),
+          key: 'customers',
+        },
 
-    getItem(<>{t(' Admin')}</>, 'admin', !topMenu && <UilAirplay />, [
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/company'}>
-          {t('company')}
-        </NavLink>,
-        'company',
-        !topMenu && <UilMap />,
-      ),
-
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/roles'}>
-          {t('roles')}
-        </NavLink>,
-        'roles',
-        !topMenu && <UilAirplay />,
-      ),
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/users'}>
-          {t('users')}
-        </NavLink>,
-        'users',
-        !topMenu && <UilUsersAlt />,
-      ),
-    ]),
-
-    getItem(<>{t('Inventory')}</>, 'Store', !topMenu && <UilShoppingCart />, [
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/stores'}>
-          {t('stores')}
-        </NavLink>,
-        'stores',
-        !topMenu && <UilShoppingCart />,
-      ),
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/products'}>
-          {t('products')}
-        </NavLink>,
-        'products',
-        !topMenu && <UilDatabase />,
-      ),
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/customers'}>
-          {t('customers')}
-        </NavLink>,
-        'customers',
-        !topMenu && <UilLayerGroup />,
-      ),
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/bills'}>
-          {t('billings')}
-        </NavLink>,
-        'billings',
-        !topMenu && <UilDocumentLayoutLeft />,
-      ),
-    ]),
-    getItem(<>{t(' Payrol')}</>, 'payroll', !topMenu && <UilLayerGroup />, [
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/components'}>
-          {t('components')}
-        </NavLink>,
-        'components',
-        !topMenu && <UilLayerGroup />,
-      ),
-      getItem(
-        <NavLink onClick={toggleCollapsed} to={'/packages'}>
-          {t('packages')}
-        </NavLink>,
-        'packages',
-        !topMenu && <UilLayerGroup />,
-      ),
-    ]),
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/rooms'}>
+              {t('rooms')}
+            </NavLink>
+          ),
+          key: 'rooms',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/bookings'}>
+              {t('bookings')}
+            </NavLink>
+          ),
+          key: 'bookings',
+        },
+      ],
+    },
   ];
 
   return (
@@ -140,21 +143,10 @@ function MenuItems({ toggleCollapsed }) {
       onOpenChange={onOpenChange}
       onClick={onClick}
       mode={!topMenu || window.innerWidth <= 991 ? 'inline' : 'horizontal'}
-      // // eslint-disable-next-line no-nested-ternary
-      defaultSelectedKeys={
-        !topMenu
-          ? [
-              `${
-                mainPathSplit.length === 1
-                  ? 'dashboard'
-                  : mainPathSplit.length === 2
-                  ? mainPathSplit[1]
-                  : mainPathSplit[2]
-              }`,
-            ]
-          : []
-      }
-      defaultOpenKeys={!topMenu ? [`${mainPathSplit.length > 2 ? [mainPathSplit[1]] : 'dashboard'}`] : []}
+      defaultSelectedKeys={[
+        mainPathSplit.length === 1 ? 'dashboard' : mainPathSplit.length === 2 ? mainPathSplit[1] : mainPathSplit[2],
+      ]}
+      defaultOpenKeys={!topMenu ? [mainPathSplit[1] || 'dashboard'] : []}
       overflowedIndicator={<UilEllipsisV />}
       openKeys={openKeys}
       items={items}

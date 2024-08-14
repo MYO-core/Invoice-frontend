@@ -5,7 +5,7 @@ import AddOrder from './AddOrder';
 import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
-import { getAllOrder, deleteOrder } from '../../utility/services/orders';
+import { getAllOrder, deleteOrder } from '../../utility/services/bookings';
 
 const { Search } = Input;
 
@@ -21,8 +21,8 @@ const Users = () => {
       breadcrumbName: 'Dashboard',
     },
     {
-      path: '/orders',
-      breadcrumbName: 'Orders',
+      path: '/bookings',
+      breadcrumbName: 'Bookings',
     },
   ];
 
@@ -30,7 +30,7 @@ const Users = () => {
     getAllOrder({ search: searchValue, status: statusChange })
       .then((res) => {
         if (res) {
-          setAllOrder(res?.data?.data);
+          setAllOrder(res?.data?.rows);
         }
       })
       .catch((err) => console.log('err', err));
@@ -50,7 +50,7 @@ const Users = () => {
       title: 'Email',
       dataIndex: 'customerEmail',
       key: 'customerEmail',
-      width: 150,
+      width: 180,
     },
     {
       title: 'Check In',
@@ -68,10 +68,9 @@ const Users = () => {
     },
     {
       title: 'Room Number',
-      dataIndex: 'roomNumber',
-      key: 'roomNumber',
+      dataIndex: 'Room',
       width: 150,
-      render: (roomNumber) => (roomNumber ? roomNumber : '-'),
+      render: (r) => r.roomNumber || '-',
     },
     {
       title: 'Status',
@@ -84,7 +83,7 @@ const Users = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button size="middle" onClick={() => setIsEditOrder({ isOpen: true, orderId: record?._id })}>
+          <Button size="middle" onClick={() => setIsEditOrder({ isOpen: true, orderId: record?.id })}>
             Edit
           </Button>
           <Popconfirm
@@ -121,7 +120,7 @@ const Users = () => {
   return (
     <>
       <PageHeader
-        title="Orders"
+        title="Bookings"
         routes={PageRoutes}
         className="flex items-center justify-between px-8 xl:px-[15px] pt-2 pb-6 sm:pb-[30px] bg-transparent sm:flex-col"
       />
@@ -145,28 +144,20 @@ const Users = () => {
                           label: 'All',
                         },
                         {
-                          value: 'room_allocated',
-                          label: 'Room Allocated',
+                          value: 'booked',
+                          label: 'booked',
                         },
                         {
-                          value: 'confirmed',
-                          label: 'Confirmed',
+                          value: 'checked-in',
+                          label: 'checked-in',
                         },
                         {
-                          value: 'canceled',
-                          label: 'Cancelled',
+                          value: 'checked-out',
+                          label: 'checked-out',
                         },
                         {
-                          value: 'cancel_request',
-                          label: 'Cancel Requested',
-                        },
-                        {
-                          value: 'completed',
-                          label: 'Completed',
-                        },
-                        {
-                          value: 'payment_pending',
-                          label: 'Payment Pending',
+                          value: 'cancelled',
+                          label: 'cancelled',
                         },
                       ]}
                     />

@@ -168,12 +168,12 @@ const ThemeLayout = (WrappedComponent) => {
                     )}
                   </div>
                 </div>
-                <div className="hidden md:flex items-center ltr:pr-[25px] rtl:pl-[25px] ltr:ssm:pr-[10px] rtl:ssm:pl-[10px]">
+                {/* <div className="hidden md:flex items-center ltr:pr-[25px] rtl:pl-[25px] ltr:ssm:pr-[10px] rtl:ssm:pl-[10px]">
                   <Search />
                   <Link className="inline-flex text-light dark:text-white60" onClick={onShowHide} to="#">
                     <UilEllipsisV className="w-[18px] h-[18px]" />
                   </Link>
-                </div>
+                </div> */}
               </div>
             </Header>
             <Row>

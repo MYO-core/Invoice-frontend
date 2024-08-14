@@ -8,7 +8,7 @@ import withAdminLayout from '../../layout/withAdminLayout';
 const DemoEight = lazy(() => import('../../container/dashboard/DemoSeven'));
 const Roles = lazy(() => import('../../container/roles'));
 const Cms = lazy(() => import('../../container/cms'));
-const Orders = lazy(() => import('../../container/orders'));
+const Bookings = lazy(() => import('../../container/bookings'));
 const Users = lazy(() => import('../../container/usersNew'));
 const Status = lazy(() => import('../../container/status'));
 const Session = lazy(() => import('../../container/session'));
@@ -18,6 +18,7 @@ const Organisation = lazy(() => import('../../container/organisation'));
 const Bills = lazy(() => import('../../container/bills'));
 const Components = lazy(() => import('../../container/salaryComponents'));
 const Packages = lazy(() => import('../../container/salaryPackage/index'));
+const Rooms = lazy(() => import('../../container/rooms'));
 const Products = lazy(() => import('../../container/products'));
 const Stores = lazy(() => import('../../container/stores'));
 const CustomerNew = lazy(() => import('../../container/customerNew'));
@@ -42,7 +43,7 @@ const Admin = React.memo(() => {
         <Route index path="roles/*" element={<Roles />} />
         <Route index path="users/*" element={<Users />} />
         <Route index path="cms/*" element={<Cms />} />
-        <Route index path="orders/*" element={<Orders />} />
+        <Route index path="bookings/*" element={<Bookings />} />
         <Route index path="status/*" element={<Status />} />
         <Route index path="session/*" element={<Session />} />
         <Route index path="course/*" element={<Course />} />
@@ -56,6 +57,7 @@ const Admin = React.memo(() => {
         <Route index path="profile/*" element={<Teachers />} />
         <Route index path="components/*" element={<Components />} />
         <Route index path="packages/*" element={<Packages />} />
+        <Route index path="rooms/*" element={<Rooms />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
