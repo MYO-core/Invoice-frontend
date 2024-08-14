@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Modal, Input, Popconfirm } from 'antd';
-
+import { Row, Col, Button, Modal, Input, Popconfirm, Select, Switch } from 'antd';
+const { Search } = Input;
 import { Space, Table } from 'antd';
 import AddCms from './AddCms';
 import { GlobalUtilityStyle } from '../styled';
@@ -11,6 +11,9 @@ import { deleteCms, getAllCms } from '../../utility/services/rooms';
 const Cms = () => {
   const [isAddCms, setisAddCms] = useState(false);
   const [start, setStart] = useState(0);
+  const [searchValue, setSearchValue] = useState('');
+  const [statusChange, setStatusChange] = useState('');
+  const [isAvailable, setIsAvailable] = useState(false);
 
   const [isEditCms, setIsEditCms] = useState({ isOpen: false, cmsId: '' });
   const [allCms, setAllCms] = useState([]);
@@ -94,8 +97,8 @@ const Cms = () => {
     },
   ];
 
-  const getAllData = () => {
-    getAllCms({ start, limit: 10 })
+  const getAllData = ({ search, type, isAvailable }) => {
+    getAllCms({ start, limit: 10, search, type, isAvailable })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
@@ -105,8 +108,18 @@ const Cms = () => {
   };
 
   useEffect(() => {
-    getAllData();
-  }, []);
+    getAllData({ search: searchValue, type: statusChange, isAvailable });
+  }, [searchValue, statusChange, isAvailable]);
+
+  const onSearch = (value) => {
+    setSearchValue(value);
+  };
+  const handleStatusChange = (value) => {
+    setStatusChange(value);
+  };
+  const geIsActive = (value) => {
+    setIsAvailable(!isAvailable);
+  };
 
   return (
     <>
@@ -119,13 +132,45 @@ const Cms = () => {
         <Row gutter={16}>
           <Col sm={24} xs={24} lg={24} className="">
             <Cards
+              title={
+                <div className="flex items-center gap-4">
+                  <div>
+                    <Switch checked={isAvailable} onChange={geIsActive} />
+                  </div>
+                  <div>
+                    <Select
+                      style={{
+                        width: 120,
+                      }}
+                      size="medium"
+                      placeholder="Room Type"
+                      onChange={handleStatusChange}
+                      // options={allRoles}
+                    >
+                      <Option value="">All</Option>
+                      <Option value="single">Single</Option>
+                      <Option value="double">Double</Option>
+                      <Option value="suite">Suite</Option>
+                      <Option value="deluxe">Deluxe</Option>
+                      <Option value="family">Family</Option>
+                    </Select>
+                  </div>
+                  <div>
+                    <Search
+                      placeholder="Room Number"
+                      allowClear
+                      enterButton="Search"
+                      size="middle"
+                      onSearch={onSearch}
+                    />
+                  </div>
+                </div>
+              }
               moreBtn={
                 <Button type="primary" onClick={() => setisAddCms(true)}>
                   Add
                 </Button>
               }
-              border={false}
-              size="default"
             >
               <Table size="small" scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allCms} />
             </Cards>

@@ -5,8 +5,11 @@ const addCms = async ({ body }) => {
   return response;
 };
 
-const getAllCms = async ({ start = 0, limit = 10 }) => {
-  const response = await callApi.get(`/rooms?start=${start}&limit=${limit}`);
+const getAllCms = async ({ start = 0, limit = 10, search, type, isAvailable }) => {
+  let searchQuery = search ? `&search=${search}` : ``;
+  let typeQuery = type ? `&roomType=${type}` : ``;
+  let isAvailableQ = isAvailable ? `&isAvailable=${isAvailable}` : ``;
+  const response = await callApi.get(`/rooms?start=${start}&limit=${limit}${searchQuery}${typeQuery}${isAvailableQ}`);
   return response;
 };
 
