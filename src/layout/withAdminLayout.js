@@ -12,11 +12,13 @@ import { FooterStyle, LayoutContainer, SmallScreenAuthInfo, TopMenuSearch } from
 import TopMenu from './TopMenu';
 import Search from '../components/utilities/auth-info/Search';
 import AuthInfo from '../components/utilities/auth-info/info';
+import StoreDropdown from '../container/bills/Stores';
 import { ReactComponent as MySVG } from '../static/img/icon/left-bar.svg';
 
 const { theme } = require('../config/theme/themeVariables');
 
 const { Header, Sider, Content } = Layout;
+const classNameForIcon = window.length > 991 ? 'justify-between' : '';
 
 const ThemeLayout = (WrappedComponent) => {
   class LayoutComponent extends Component {
@@ -127,7 +129,7 @@ const ThemeLayout = (WrappedComponent) => {
             >
               <div className="flex flex-row items-center flex-1 h-full">
                 <div className=" rtl:ssm:pr-[15px] ltr:pr-5 rtl:pl-5 ltr:ssm:pl-[15px] ltr:ssm:pr-[15px] rtl:ssm::pl:[15px] ltr:pl-[30px] rtl:pr-[30px] xs:ltr:pl-[20px] xs:rtl:pr-[20px] min-w-[280px] ssm:min-w-[220px] xs:min-w-[170px] h-full grid align-middle dark:bg-[#323541]">
-                  <div className="flex items-center justify-between">
+                  <div className={`flex items-center ${window.innerWidth > 991 ? 'justify-between' : ''}`}>
                     <Link to="/admin">
                       <img
                         style={{
@@ -145,7 +147,7 @@ const ThemeLayout = (WrappedComponent) => {
                     {!topMenu || window.innerWidth <= 991 ? (
                       <Button
                         type="link"
-                        className="p-0 bg-transparent border-none dark:border-transparent dark:bg-transparent dark:text-white60 dark:hover:text-primary text-[#525768] hover:text-primary"
+                        className=" bg-transparent border-none dark:border-transparent dark:bg-transparent dark:text-white60 dark:hover:text-primary text-[#525768] hover:text-primary"
                         onClick={toggleCollapsed}
                       >
                         <MySVG />
@@ -160,11 +162,15 @@ const ThemeLayout = (WrappedComponent) => {
                       <TopMenuSearch>
                         <div className="flex top-right-wrap">
                           {/* <CustomizerWrap rtl={rtl} /> */}
+                          <StoreDropdown />
                           <AuthInfo />
                         </div>
                       </TopMenuSearch>
                     ) : (
-                      <AuthInfo />
+                      <>
+                        <StoreDropdown />
+                        <AuthInfo />
+                      </>
                     )}
                   </div>
                 </div>
@@ -220,19 +226,6 @@ const ThemeLayout = (WrappedComponent) => {
                           </Link>
                         </span>
                       </Col>
-                      {/* <Col md={12} xs={24}>
-                        <div className="justify-end md:justify-center items-center flex gap-[15px]">
-                          <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
-                            About
-                          </NavLink>
-                          <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
-                            Team
-                          </NavLink>
-                          <NavLink className="text-theme-gray dark:text-white60 text-[14px] hover:text-primary" to="#">
-                            Contact
-                          </NavLink>
-                        </div>
-                      </Col> */}
                     </Row>
                   </FooterStyle>
                 </Content>

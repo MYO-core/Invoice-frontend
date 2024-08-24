@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
 import { Row, Col, Button, Modal, Input, Popconfirm, Select, Switch } from 'antd';
 const { Search } = Input;
 import { Space, Table } from 'antd';
@@ -7,12 +8,14 @@ import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { deleteCms, getAllCms } from '../../utility/services/rooms';
+import { currentStoreId } from '../../globalStore/index';
 
 const Cms = () => {
   const [isAddCms, setisAddCms] = useState(false);
   const [start, setStart] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [statusChange, setStatusChange] = useState('');
+  const [currentStore, setCurrentStore] = useAtom(currentStoreId);
   const [isAvailable, setIsAvailable] = useState(false);
 
   const [isEditCms, setIsEditCms] = useState({ isOpen: false, cmsId: '' });
@@ -98,7 +101,7 @@ const Cms = () => {
   ];
 
   const getAllData = ({ search, type, isAvailable }) => {
-    getAllCms({ start, limit: 10, search, type, isAvailable })
+    getAllCms({ start, limit: 10, search, type, isAvailable, store_id: currentStore })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
@@ -109,7 +112,7 @@ const Cms = () => {
 
   useEffect(() => {
     getAllData({ search: searchValue, type: statusChange, isAvailable });
-  }, [searchValue, statusChange, isAvailable]);
+  }, [searchValue, statusChange, isAvailable, currentStore]);
 
   const onSearch = (value) => {
     setSearchValue(value);
@@ -150,9 +153,14 @@ const Cms = () => {
                       <Option value="">All</Option>
                       <Option value="single">Single</Option>
                       <Option value="double">Double</Option>
+                      <Option value="twin">Twin</Option>
                       <Option value="suite">Suite</Option>
                       <Option value="deluxe">Deluxe</Option>
                       <Option value="family">Family</Option>
+                      <Option value="executive">Executive</Option>
+                      <Option value="presidential Suite">Presidential Suite</Option>
+                      <Option value="studio">Studio</Option>
+                      <Option value="king">King</Option>
                     </Select>
                   </div>
                   <div>
@@ -190,7 +198,13 @@ const Cms = () => {
           setIsEditCms({ isOpen: false, cmsId: '' });
         }}
       >
-        <AddCms setisAddCms={setisAddCms} getAllData={getAllData} isEditCms={isEditCms} setIsEditCms={setIsEditCms} />
+        <AddCms
+          setisAddCms={setisAddCms}
+          getAllData={getAllData}
+          isEditCms={isEditCms}
+          setIsEditCms={setIsEditCms}
+          currentStore={currentStore}
+        />
       </Modal>
     </>
   );

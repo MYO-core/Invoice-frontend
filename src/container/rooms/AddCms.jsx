@@ -8,7 +8,7 @@ import { addCms, getSingleCms, updateCms } from '../../utility/services/rooms';
 
 const { Option } = Select;
 
-const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms }) => {
+const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStore }) => {
   const [filesData, setFilesData] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [isPreviewModal, setIsPreviewModal] = useState(false);
@@ -66,7 +66,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms }) => {
         .catch((err) => console.log('err', err));
     } else {
       addCms({
-        body: body,
+        body: { ...body, store_id: currentStore },
       })
         ?.then((res) => {
           setisAddCms(false);
@@ -131,11 +131,17 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms }) => {
                   ]}
                 >
                   <Select placeholder="Select Room Type">
+                    <Option value="">All</Option>
                     <Option value="single">Single</Option>
                     <Option value="double">Double</Option>
+                    <Option value="twin">Twin</Option>
                     <Option value="suite">Suite</Option>
                     <Option value="deluxe">Deluxe</Option>
                     <Option value="family">Family</Option>
+                    <Option value="executive">Executive</Option>
+                    <Option value="presidential Suite">Presidential Suite</Option>
+                    <Option value="studio">Studio</Option>
+                    <Option value="king">King</Option>
                   </Select>
                 </Form.Item>
               </Col>
@@ -175,13 +181,19 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms }) => {
 
             <Row gutter={[16, 0]}>
               <Col xs={24} md={12}>
-                <Form.Item label="Is Available" name="isAvailable" valuePropName="checked">
-                  <Switch />
+                <Form.Item
+                  label="Extra Beds"
+                  name="extraBeds"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Extra Bed is required!',
+                    },
+                  ]}
+                >
+                  <Input />
                 </Form.Item>
               </Col>
-            </Row>
-
-            <Row gutter={[16, 0]}>
               <Col xs={24} md={12}>
                 <Form.Item label="Description" name="description">
                   <Input.TextArea rows={4} />
