@@ -5,7 +5,7 @@ import { addOrder, getSingleOrder, updateOrder } from '../../utility/services/bo
 import { getAllCms } from '../../utility/services/rooms';
 const { Option } = Select;
 
-const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder }) => {
+const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, currentStore }) => {
   const [loading, setLoading] = useState(false);
   const [roomData, setRoomData] = useState([]);
   const [roomIdData, setRoomIdData] = useState({});
@@ -32,7 +32,7 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder }) =
         });
     } else {
       addOrder({
-        body: body,
+        body: { ...body, store_id: currentStore },
       })
         ?.then((res) => {
           message.success('Order added successfully');
@@ -91,125 +91,158 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder }) =
     <>
       <Spin spinning={loading}>
         <div>
-          <Form form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
-            <Row gutter={[16, 0]}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label="Customer Name"
-                  name="customerName"
-                  rules={[{ required: true, message: 'Customer name is required!' }]}
-                >
-                  <Input />
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            // initialValues={{
+            //   customer: { identification_type: 'AADHAR' },
+            //   status: 'booked',
+            // }}
+          >
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item name={['customer', 'id']} label="Customer ID">
+                  <Input placeholder="Auto-generated ID" disabled />
                 </Form.Item>
               </Col>
-              <Col xs={24} md={12}>
+              <Col span={12}>
                 <Form.Item
-                  label="Customer Email"
-                  name="customerEmail"
+                  name={['customer', 'identification_number']}
+                  label="Identification Number"
+                  rules={[{ required: true, message: 'Identification Number is required' }]}
+                >
+                  <Input placeholder="Enter Identification Number" />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name={['customer', 'identification_type']}
+                  label="Identification Type"
+                  rules={[{ required: true, message: 'Please select an Identification Type' }]}
+                >
+                  <Select>
+                    <Option value="AADHAR">Aadhar</Option>
+                    <Option value="DL">Driving Licence</Option>
+                    <Option value="VOTERID">Voter Id</Option>
+                    <Option value="PASSPORT">Passport</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name={['customer', 'name']}
+                  label="Customer Name"
+                  rules={[{ required: true, message: 'Customer Name is required' }]}
+                >
+                  <Input placeholder="Enter Customer Name" />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name={['customer', 'email']}
+                  label="Email"
+                  rules={[{ type: 'email', message: 'Please enter a valid email address' }]}
+                >
+                  <Input placeholder="Enter Email Address" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name={['customer', 'phone']} label="Phone">
+                  <Input placeholder="Enter Phone Number" />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name="checkInDate"
+                  label="Check-In Date"
+                  rules={[{ required: true, message: 'Check-In Date is required' }]}
+                >
+                  <DatePicker />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="checkOutDate"
+                  label="Check-Out Date"
                   rules={[
-                    { required: true, message: 'Customer email is required!' },
-                    { type: 'email', message: 'Please enter a valid email!' },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        const checkInDate = getFieldValue('checkInDate');
+                        if (!value || value.isAfter(checkInDate)) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('Check-Out Date must be after Check-In Date'));
+                      },
+                    }),
                   ]}
                 >
-                  <Input />
+                  <DatePicker />
                 </Form.Item>
               </Col>
             </Row>
 
-            <Row gutter={[16, 0]}>
-              <Col xs={24} md={12}>
+            <Row gutter={16}>
+              <Col span={12}>
                 <Form.Item
-                  label="Customer Phone"
-                  name="customerPhone"
-                  rules={[{ required: true, message: 'Customer phone is required!' }]}
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label="Number of Guests"
                   name="numberOfGuests"
-                  rules={[{ required: true, message: 'Number of guests is required!' }]}
+                  label="Number of Guests"
+                  rules={[{ required: true, type: 'number', min: 1, message: 'Must have at least 1 guest' }]}
                 >
-                  <InputNumber min={1} />
+                  <InputNumber min={1} style={{ width: '80%' }} />
                 </Form.Item>
               </Col>
-            </Row>
-
-            <Row gutter={[16, 0]}>
-              <Col xs={24} md={12}>
+              <Col span={12}>
                 <Form.Item
-                  label="Check-In Date"
-                  name="checkInDate"
-                  rules={[{ required: true, message: 'Check-in date is required!' }]}
+                  name="roomIds"
+                  label="Room IDs"
+                  rules={[{ required: true, message: 'Please select at least one room' }]}
                 >
-                  <DatePicker style={{ width: '100%' }} />
-                </Form.Item>
-              </Col>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label="Check-Out Date"
-                  name="checkOutDate"
-                  // rules={[{ required: true, message: 'Check-out date is required!' }]}
-                >
-                  <DatePicker style={{ width: '100%' }} />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={[16, 0]}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label="Room Number"
-                  name="roomId"
-                  rules={[{ required: true, message: 'Room ID is required!' }]}
-                >
-                  <Select
-                    style={{ width: '100%' }}
-                    placeholder="Select a room"
-                    value={roomIdData?.value || undefined}
-                    loading={loading}
-                    filterOption={false}
-                    // labelInValue
-                  >
-                    {roomData.map((room) => (
-                      <Option key={room.id} value={room.id}>
-                        {room.roomNumber}
-                      </Option>
-                    ))}
+                  <Select mode="multiple" placeholder="Select Room IDs">
+                    <Option value="1">Room 1</Option>
+                    <Option value="2">Room 2</Option>
+                    <Option value="3">Room 3</Option>
                   </Select>
                 </Form.Item>
               </Col>
-              <Col xs={24} md={12}>
+            </Row>
+
+            <Row gutter={16}>
+              <Col span={12}>
                 <Form.Item
-                  label="Total Price"
                   name="totalPrice"
-                  rules={[{ required: true, message: 'Total price is required!' }]}
+                  label="Total Price"
+                  rules={[{ required: true, type: 'number', min: 0, message: 'Total Price must be positive' }]}
                 >
-                  <InputNumber min={0} style={{ width: '100%' }} />
+                  <InputNumber min={0} formatter={(value) => `₹ ${value}`} style={{ width: '80%' }} />
                 </Form.Item>
               </Col>
-            </Row>
-
-            <Row gutter={[16, 0]}>
-              <Col xs={24} md={12}>
-                <Form.Item label="Status" name="status" rules={[{ required: true, message: 'Status is required!' }]}>
+              <Col span={12}>
+                <Form.Item name="status" label="Booking Status">
                   <Select>
-                    <Select.Option value="booked">Booked</Select.Option>
-                    <Select.Option value="checked-in">Checked-In</Select.Option>
-                    <Select.Option value="checked-out">Checked-Out</Select.Option>
-                    <Select.Option value="cancelled">Cancelled</Select.Option>
+                    <Option value="booked">Booked</Option>
+                    <Option value="checked-in">Checked-In</Option>
+                    <Option value="checked-out">Checked-Out</Option>
+                    <Option value="cancelled">Cancelled</Option>
                   </Select>
                 </Form.Item>
               </Col>
             </Row>
 
-            <div className="flex justify-end gap-2 mt-5">
+            <Form.Item>
               <Button type="primary" htmlType="submit">
                 Submit
               </Button>
-            </div>
+            </Form.Item>
           </Form>
         </div>
       </Spin>

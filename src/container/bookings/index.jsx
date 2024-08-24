@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
 import { Row, Col, Button, Table, Modal, Space, Popconfirm, message, Select, Input } from 'antd';
 import moment from 'moment';
 import AddOrder from './AddOrder';
@@ -6,6 +7,7 @@ import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { getAllOrder, deleteOrder } from '../../utility/services/bookings';
+import { currentStoreId } from '../../globalStore/index';
 
 const { Search } = Input;
 
@@ -15,6 +17,7 @@ const Users = () => {
   const [isEditOrder, setIsEditOrder] = useState({});
   const [searchValue, setSearchValue] = useState('');
   const [statusChange, setStatusChange] = useState('');
+  const [currentStore, setCurrentStore] = useAtom(currentStoreId);
   const PageRoutes = [
     {
       path: '/',
@@ -198,6 +201,7 @@ const Users = () => {
           getAllOrder={getAllOrders}
           isEditOrder={isEditOrder}
           setIsEditOrder={setIsEditOrder}
+          currentStore={currentStore}
         />
       </Modal>
     </>
