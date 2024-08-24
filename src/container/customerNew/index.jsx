@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, Table, Modal, Space, Popconfirm, message, Select, Input } from 'antd';
+import { EditFilled, DeleteFilled } from '@ant-design/icons';
 import AddUsers from './AddUsers';
 import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
@@ -43,13 +44,13 @@ const Users = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      width: 150,
+      width: 180,
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      width: 150,
+      width: 180,
     },
     {
       title: 'Phone',
@@ -69,8 +70,8 @@ const Users = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button size="middle" onClick={() => setIsEditUsers({ isOpen: true, userId: record?.id })}>
-            Edit
+          <Button size="small" onClick={() => setIsEditUsers({ isOpen: true, userId: record?.id })}>
+            <EditFilled />
           </Button>
           <Popconfirm
             title="Are you sure to delete this Customer?"
@@ -86,8 +87,8 @@ const Users = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button danger size="middle">
-              Delete
+            <Button danger size="small">
+              <DeleteFilled />
             </Button>
           </Popconfirm>
         </Space>

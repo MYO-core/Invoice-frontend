@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { EditFilled, DeleteFilled } from '@ant-design/icons';
 import { Row, Col, Button, Table, Modal, Space, Popconfirm, message, Select, Input, Avatar } from 'antd';
 import AddUsers from './AddUsers';
 import Calculator from './Calculator';
@@ -104,12 +105,12 @@ const Users = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button size="middle" onClick={() => setIsEditUsers({ isOpen: true, userId: record?.id })}>
-            Edit
+          <Button size="small" onClick={() => setIsEditUsers({ isOpen: true, userId: record?.id })}>
+            <EditFilled />
           </Button>
           <Button
             type="primary"
-            size="middle"
+            size="small"
             style={{ marginLeft: 8 }}
             onClick={() => {
               download(record?.id)
@@ -120,9 +121,8 @@ const Users = () => {
                 })
                 .catch((err) => console.log('err', err));
             }}
-            icon={<DownloadOutlined />}
           >
-            Download
+            <DownloadOutlined />
           </Button>
         </Space>
       ),

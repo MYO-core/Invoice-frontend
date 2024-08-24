@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { Row, Col, Button, Modal, Input, Popconfirm, Select, Switch } from 'antd';
 const { Search } = Input;
 import { Space, Table } from 'antd';
+import { EditFilled, DeleteFilled } from '@ant-design/icons';
 import AddCms from './AddCms';
 import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
@@ -73,8 +74,8 @@ const Cms = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button size="middle" onClick={() => setIsEditCms({ isOpen: true, cmsId: record?.id })}>
-            Edit
+          <Button size="small" onClick={() => setIsEditCms({ isOpen: true, cmsId: record?.id })}>
+            <EditFilled />
           </Button>
           <Popconfirm
             title="Are you sure to delete this Room?"
@@ -90,8 +91,8 @@ const Cms = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button danger size="middle">
-              Delete
+            <Button danger size="small">
+              <DeleteFilled />
             </Button>
           </Popconfirm>
         </Space>

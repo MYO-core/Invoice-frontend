@@ -102,23 +102,6 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
           >
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name={['customer', 'id']} label="Customer ID">
-                  <Input placeholder="Auto-generated ID" disabled />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name={['customer', 'identification_number']}
-                  label="Identification Number"
-                  rules={[{ required: true, message: 'Identification Number is required' }]}
-                >
-                  <Input placeholder="Enter Identification Number" />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={16}>
-              <Col span={12}>
                 <Form.Item
                   name={['customer', 'identification_type']}
                   label="Identification Type"
@@ -134,11 +117,27 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
               </Col>
               <Col span={12}>
                 <Form.Item
+                  name={['customer', 'identification_number']}
+                  label="Identification Number"
+                  rules={[{ required: true, message: 'Identification Number is required' }]}
+                >
+                  <Input placeholder="Enter Identification Number" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
                   name={['customer', 'name']}
                   label="Customer Name"
                   rules={[{ required: true, message: 'Customer Name is required' }]}
                 >
                   <Input placeholder="Enter Customer Name" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name={['customer', 'phone']} label="Phone">
+                  <Input placeholder="Enter Phone Number" />
                 </Form.Item>
               </Col>
             </Row>
@@ -154,8 +153,8 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name={['customer', 'phone']} label="Phone">
-                  <Input placeholder="Enter Phone Number" />
+                <Form.Item name={['customer', 'address']} label="Address">
+                  <Input placeholder="Enter Address" />
                 </Form.Item>
               </Col>
             </Row>

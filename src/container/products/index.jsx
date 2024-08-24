@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Button, Modal, Input, Popconfirm } from 'antd';
 
 import { Space, Table } from 'antd';
+import { EditFilled, DeleteFilled } from '@ant-design/icons';
 import AddCms from './AddCms';
 import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
@@ -51,8 +52,8 @@ const Cms = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button size="middle" onClick={() => setIsEditCms({ isOpen: true, cmsId: record?.id })}>
-            Edit
+          <Button size="small" onClick={() => setIsEditCms({ isOpen: true, cmsId: record?.id })}>
+            <EditFilled />
           </Button>
           <Popconfirm
             title="Are you sure to delete this task?"
@@ -68,8 +69,8 @@ const Cms = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button danger size="middle">
-              Delete
+            <Button danger size="small">
+              <DeleteFilled />
             </Button>
           </Popconfirm>
         </Space>
@@ -95,7 +96,7 @@ const Cms = () => {
   return (
     <>
       <PageHeader
-        title="Cms"
+        title="Products"
         routes={PageRoutes}
         className="flex items-center justify-between px-8 xl:px-[15px] pt-2 pb-6 sm:pb-[30px] bg-transparent sm:flex-col"
       />
