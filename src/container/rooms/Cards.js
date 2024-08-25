@@ -7,7 +7,7 @@ const { Panel } = Collapse;
 
 const RoomCards = ({ allData, setIsEditCms }) => {
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '1px' }}>
       <Row gutter={[16, 16]}>
         {allData.map((room) => (
           <Col
