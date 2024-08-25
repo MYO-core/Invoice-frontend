@@ -8,7 +8,7 @@ const { Option } = Select;
 const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, currentStore }) => {
   const [loading, setLoading] = useState(false);
   const [roomData, setRoomData] = useState([]);
-  const [roomIdData, setRoomIdData] = useState({});
+  const [roomIdData, setRoomIdData] = useState([]);
 
   const [form] = Form.useForm();
 
@@ -50,7 +50,7 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
   };
 
   useEffect(() => {
-    // fetchRoomSuggestions();
+    fetchRoomSuggestions();
     // populate single room data
     if (isEditOrder?.orderId) {
       setLoading(true);
@@ -59,9 +59,13 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
           const data = res.data;
           data.checkInDate = moment(data.checkInDate);
           data.checkOutDate = moment(data.checkOutDate);
-          //   console.log('data', data);
-          setRoomIdData({ option: data?.Room?.roomNumber, value: data?.Room.id });
-          setRoomData([data.Room]);
+          console.log('data', data);
+          let dd = data.Rooms.map((d) => {
+            return d.id;
+          });
+          // setRoomIdData(dd);
+          data.roomIds = dd;
+          setRoomData(data.Rooms);
           form.setFieldsValue(data);
           setLoading(false);
         })
@@ -75,7 +79,7 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
   const fetchRoomSuggestions = async (number) => {
     setLoading(true);
 
-    getAllCms({ roomNumber: number })
+    getAllCms({ roomNumber: number, store_id: currentStore })
       .then((res) => {
         const data = res?.data?.rows;
         setRoomData(data); // Update room options state with fetched data
@@ -91,37 +95,34 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
     <>
       <Spin spinning={loading}>
         <div>
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={onFinish}
-            // initialValues={{
-            //   customer: { identification_type: 'AADHAR' },
-            //   status: 'booked',
-            // }}
-          >
+          <Form form={form} layout="vertical" onFinish={onFinish}>
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  name={['customer', 'identification_type']}
-                  label="Identification Type"
-                  rules={[{ required: true, message: 'Please select an Identification Type' }]}
+                  name="checkInDate"
+                  label="Check-In Date"
+                  rules={[{ required: true, message: 'Check-In Date is required' }]}
                 >
-                  <Select>
-                    <Option value="AADHAR">Aadhar</Option>
-                    <Option value="DL">Driving Licence</Option>
-                    <Option value="VOTERID">Voter Id</Option>
-                    <Option value="PASSPORT">Passport</Option>
-                  </Select>
+                  <DatePicker />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
-                  name={['customer', 'identification_number']}
-                  label="Identification Number"
-                  rules={[{ required: true, message: 'Identification Number is required' }]}
+                  name="checkOutDate"
+                  label="Check-Out Date"
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        const checkInDate = getFieldValue('checkInDate');
+                        if (!value || value.isAfter(checkInDate)) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('Check-Out Date must be after Check-In Date'));
+                      },
+                    }),
+                  ]}
                 >
-                  <Input placeholder="Enter Identification Number" />
+                  <DatePicker />
                 </Form.Item>
               </Col>
             </Row>
@@ -158,34 +159,28 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
                 </Form.Item>
               </Col>
             </Row>
-
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
-                  name="checkInDate"
-                  label="Check-In Date"
-                  rules={[{ required: true, message: 'Check-In Date is required' }]}
+                  name={['customer', 'identification_type']}
+                  label="Identification Type"
+                  rules={[{ required: true, message: 'Please select an Identification Type' }]}
                 >
-                  <DatePicker />
+                  <Select>
+                    <Option value="AADHAR">Aadhar</Option>
+                    <Option value="DL">Driving Licence</Option>
+                    <Option value="VOTERID">Voter Id</Option>
+                    <Option value="PASSPORT">Passport</Option>
+                  </Select>
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
-                  name="checkOutDate"
-                  label="Check-Out Date"
-                  rules={[
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        const checkInDate = getFieldValue('checkInDate');
-                        if (!value || value.isAfter(checkInDate)) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(new Error('Check-Out Date must be after Check-In Date'));
-                      },
-                    }),
-                  ]}
+                  name={['customer', 'identification_number']}
+                  label="Identification Number"
+                  rules={[{ required: true, message: 'Identification Number is required' }]}
                 >
-                  <DatePicker />
+                  <Input placeholder="Enter Identification Number" />
                 </Form.Item>
               </Col>
             </Row>
@@ -207,9 +202,11 @@ const AddOrder = ({ setIsAddOrder, isEditOrder, setIsEditOrder, getAllOrder, cur
                   rules={[{ required: true, message: 'Please select at least one room' }]}
                 >
                   <Select mode="multiple" placeholder="Select Room IDs">
-                    <Option value="1">Room 1</Option>
-                    <Option value="2">Room 2</Option>
-                    <Option value="3">Room 3</Option>
+                    {roomData?.map((d) => (
+                      <Option value={d.id}>
+                        {d.roomNumber} - ({d.roomType})
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>

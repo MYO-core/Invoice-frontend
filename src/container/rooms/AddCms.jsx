@@ -16,13 +16,13 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
   const [loading, setLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
 
-  const [content1Output, setContent1Output] = useState(null);
-  console.log('content1Output', content1Output);
-  const [content2Output, setContent2Output] = useState(null);
+  // const [content1Output, setContent1Output] = useState(null);
+  // console.log('content1Output', content1Output);
+  // const [content2Output, setContent2Output] = useState(null);
 
-  const handleContent2 = (event, editor) => {
-    setContent2Output(editor.getData());
-  };
+  // const handleContent2 = (event, editor) => {
+  //   setContent2Output(editor.getData());
+  // };
 
   const [form] = Form.useForm();
 

@@ -5,6 +5,7 @@ const { Search } = Input;
 import { Space, Table } from 'antd';
 import { EditFilled, DeleteFilled } from '@ant-design/icons';
 import AddCms from './AddCms';
+import Cards1 from './Cards';
 import { GlobalUtilityStyle } from '../styled';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
@@ -138,9 +139,9 @@ const Cms = () => {
             <Cards
               title={
                 <div className="flex items-center gap-4">
-                  <div>
+                  {/* <div>
                     <Switch checked={isAvailable} onChange={geIsActive} />
-                  </div>
+                  </div> */}
                   <div>
                     <Select
                       style={{
@@ -181,7 +182,8 @@ const Cms = () => {
                 </Button>
               }
             >
-              <Table size="small" scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allCms} />
+              {/* <Table size="small" scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allCms} /> */}
+              <Cards1 allData={allCms} setIsEditCms={setIsEditCms} />
             </Cards>
           </Col>
         </Row>

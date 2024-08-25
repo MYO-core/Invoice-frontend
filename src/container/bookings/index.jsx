@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
+import { EditFilled, DeleteFilled } from '@ant-design/icons';
 import { Row, Col, Button, Table, Modal, Space, Popconfirm, message, Select, Input } from 'antd';
 import moment from 'moment';
 import AddOrder from './AddOrder';
@@ -45,14 +46,16 @@ const Users = () => {
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'customerName',
-      key: 'customerName',
-      width: 150,
+      dataIndex: 'customer',
+      // key: 'customer',
+      render: (e) => e.name,
+      width: 180,
     },
     {
-      title: 'Email',
-      dataIndex: 'customerEmail',
-      key: 'customerEmail',
+      title: 'Phone',
+      dataIndex: 'customer',
+      // key: 'customerEmail',
+      render: (e) => e.phone,
       width: 180,
     },
     {
@@ -70,10 +73,10 @@ const Users = () => {
       render: (checkoutDate) => moment(checkoutDate).format('YYYY-MM-DD'),
     },
     {
-      title: 'Room Number',
-      dataIndex: 'Room',
+      title: 'no. of Rooms',
+      dataIndex: 'noOfRooms',
       width: 150,
-      render: (r) => r.roomNumber || '-',
+      key: 'noOfRooms',
     },
     {
       title: 'Status',
@@ -86,8 +89,8 @@ const Users = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button size="middle" onClick={() => setIsEditOrder({ isOpen: true, orderId: record?.id })}>
-            Edit
+          <Button size="small" onClick={() => setIsEditOrder({ isOpen: true, orderId: record?.id })}>
+            <EditFilled />
           </Button>
           <Popconfirm
             title="Are you sure to delete this Order?"
@@ -103,8 +106,8 @@ const Users = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button danger size="middle">
-              Delete
+            <Button danger size="small">
+              <DeleteFilled />
             </Button>
           </Popconfirm>
         </Space>
