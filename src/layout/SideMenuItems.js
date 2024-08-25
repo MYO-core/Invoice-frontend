@@ -51,6 +51,14 @@ function MenuItems({ toggleCollapsed }) {
         },
         {
           label: (
+            <NavLink onClick={toggleCollapsed} to={'/stores'}>
+              {t('stores')}
+            </NavLink>
+          ),
+          key: 'stores',
+        },
+        {
+          label: (
             <NavLink onClick={toggleCollapsed} to={'/roles'}>
               {t('roles')}
             </NavLink>
@@ -67,44 +75,7 @@ function MenuItems({ toggleCollapsed }) {
         },
       ],
     },
-    {
-      label: t('Inventory'),
-      key: 'Store',
-      children: [
-        {
-          label: (
-            <NavLink onClick={toggleCollapsed} to={'/stores'}>
-              {t('stores')}
-            </NavLink>
-          ),
-          key: 'stores',
-        },
-        {
-          label: (
-            <NavLink onClick={toggleCollapsed} to={'/products'}>
-              {t('products')}
-            </NavLink>
-          ),
-          key: 'products',
-        },
-        {
-          label: (
-            <NavLink onClick={toggleCollapsed} to={'/customers'}>
-              {t('customers')}
-            </NavLink>
-          ),
-          key: 'customers',
-        },
-        {
-          label: (
-            <NavLink onClick={toggleCollapsed} to={'/bills'}>
-              {t('billings')}
-            </NavLink>
-          ),
-          key: 'billings',
-        },
-      ],
-    },
+
     {
       label: t('Bookings'),
       key: 'Book',
@@ -133,6 +104,58 @@ function MenuItems({ toggleCollapsed }) {
             </NavLink>
           ),
           key: 'bookings',
+        },
+      ],
+    },
+    {
+      label: t('Inventory'),
+      key: 'Store',
+      children: [
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/products'}>
+              {t('products')}
+            </NavLink>
+          ),
+          key: 'products',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/bills'}>
+              {t('billings')}
+            </NavLink>
+          ),
+          key: 'billings',
+        },
+      ],
+    },
+    {
+      label: t('Restaurant'),
+      key: 'Restraunt',
+      children: [
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/products'}>
+              {t('items')}
+            </NavLink>
+          ),
+          key: 'items',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/tables'}>
+              {t('tables')}
+            </NavLink>
+          ),
+          key: 'tables',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/bills'}>
+              {t('orders')}
+            </NavLink>
+          ),
+          key: 'orders',
         },
       ],
     },

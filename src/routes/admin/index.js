@@ -19,6 +19,7 @@ const Bills = lazy(() => import('../../container/bills'));
 const Components = lazy(() => import('../../container/salaryComponents'));
 const Packages = lazy(() => import('../../container/salaryPackage/index'));
 const Rooms = lazy(() => import('../../container/rooms'));
+const Tables = lazy(() => import('../../container/tables'));
 const Products = lazy(() => import('../../container/products'));
 const Stores = lazy(() => import('../../container/stores'));
 const CustomerNew = lazy(() => import('../../container/customerNew'));
@@ -58,6 +59,7 @@ const Admin = React.memo(() => {
         <Route index path="components/*" element={<Components />} />
         <Route index path="packages/*" element={<Packages />} />
         <Route index path="rooms/*" element={<Rooms />} />
+        <Route index path="tables/*" element={<Tables />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
