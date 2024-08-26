@@ -5,7 +5,7 @@ const addCms = async ({ body }) => {
   return response;
 };
 
-const getAllCms = async ({ start = 0, limit = 10, search, type, isAvailable, store_id }) => {
+const getAllTables = async ({ start = 0, limit = 10, search, type, isAvailable, store_id }) => {
   let searchQuery = search ? `&search=${search}` : ``;
   let typeQuery = type ? `&roomType=${type}` : ``;
   let storeQuery = store_id ? `&store_id=${store_id}` : ``;
@@ -32,4 +32,4 @@ const deleteCms = async ({ id }) => {
   return response;
 };
 
-export { addCms, getAllCms, getSingleCms, updateCms, deleteCms };
+export { addCms, getAllTables, getSingleCms, updateCms, deleteCms };

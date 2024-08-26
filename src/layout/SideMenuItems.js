@@ -75,7 +75,28 @@ function MenuItems({ toggleCollapsed }) {
         },
       ],
     },
-
+    {
+      label: t('Inventory'),
+      key: 'Store',
+      children: [
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/products'}>
+              {t('products')}
+            </NavLink>
+          ),
+          key: 'products',
+        },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/bills'}>
+              {t('billings')}
+            </NavLink>
+          ),
+          key: 'billings',
+        },
+      ],
+    },
     {
       label: t('Bookings'),
       key: 'Book',
@@ -107,35 +128,14 @@ function MenuItems({ toggleCollapsed }) {
         },
       ],
     },
-    {
-      label: t('Inventory'),
-      key: 'Store',
-      children: [
-        {
-          label: (
-            <NavLink onClick={toggleCollapsed} to={'/products'}>
-              {t('products')}
-            </NavLink>
-          ),
-          key: 'products',
-        },
-        {
-          label: (
-            <NavLink onClick={toggleCollapsed} to={'/bills'}>
-              {t('billings')}
-            </NavLink>
-          ),
-          key: 'billings',
-        },
-      ],
-    },
+
     {
       label: t('Restaurant'),
       key: 'Restraunt',
       children: [
         {
           label: (
-            <NavLink onClick={toggleCollapsed} to={'/products'}>
+            <NavLink onClick={toggleCollapsed} to={'/items'}>
               {t('items')}
             </NavLink>
           ),
@@ -151,7 +151,7 @@ function MenuItems({ toggleCollapsed }) {
         },
         {
           label: (
-            <NavLink onClick={toggleCollapsed} to={'/bills'}>
+            <NavLink onClick={toggleCollapsed} to={'/orders'}>
               {t('orders')}
             </NavLink>
           ),
