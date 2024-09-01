@@ -172,7 +172,7 @@ const Cms = () => {
         placement="right"
         onClose={onClose}
         open={visible}
-        width={window.innerWidth < 768 ? 400 : 600}
+        width={window.innerWidth < 768 ? 300 : 600}
       >
         <AddOrder
           setVisible={setVisible}
