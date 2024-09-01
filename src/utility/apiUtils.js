@@ -6,7 +6,7 @@ import { getItem, clearAll } from './localStorageControl';
 const hostname = () => {
   let hostUrl = '';
   switch (window.location.hostname) {
-    case 'localhost': // dev
+    case 'locdalhost': // dev
       hostUrl = 'http://localhost:4000/api/v1';
       // hostUrl = 'https://myobackend.onrender.com/api/';
       break;

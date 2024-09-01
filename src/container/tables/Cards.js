@@ -1,24 +1,33 @@
 import React from 'react';
 import { Card, Col, Row, Tag, Typography, Collapse, Button, Popconfirm } from 'antd';
 
-import { EditFilled, DeleteFilled } from '@ant-design/icons';
+import { EditFilled, DeleteFilled, PlusOutlined } from '@ant-design/icons';
 const { Text, Title } = Typography;
 const { Panel } = Collapse;
 
-const RoomCards = ({ allData, setIsEditCms }) => {
+const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
   return (
     <div style={{ padding: '1px' }}>
       <Row gutter={[16, 16]}>
         {allData.map((room) => (
-          <Col
-            key={room.id}
-            xs={24} // 1 card per row on extra-small screens (mobile)
-            sm={12} // 2 cards per row on small screens (tablets)
-            md={8} // 3 cards per row on medium screens (small desktops)
-            lg={6} // 4 cards per row on large screens (desktops)
-          >
+          <Col key={room.id} xs={24} sm={12} md={8} lg={6}>
             <Card
-              title={<Title level={5}>Table No:- {room.table_number}</Title>}
+              title={
+                <Title level={5}>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm sm:text-base">Table No:- {room.table_number}</span>
+                    <span className="ml-4 sm:ml-16">
+                      <PlusOutlined
+                        onClick={() => {
+                          setVisible(true);
+                          setTableData(room);
+                        }}
+                        style={{ cursor: 'pointer', color: '#1890ff' }}
+                      />
+                    </span>
+                  </div>
+                </Title>
+              }
               bordered={false}
               style={{
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -44,7 +53,7 @@ const RoomCards = ({ allData, setIsEditCms }) => {
                   style={{ cursor: 'pointer', color: '#1890ff' }}
                 />
                 <Popconfirm
-                  title="Are you sure to delete this Room?"
+                  title="Are you sure to delete this Table?"
                   onConfirm={() => {
                     // deleteCms({ id: room?.id })
                     //   .then((res) => {
@@ -56,8 +65,9 @@ const RoomCards = ({ allData, setIsEditCms }) => {
                   }}
                   okText="Yes"
                   cancelText="No"
-                ></Popconfirm>
-                <DeleteFilled onClick={() => {}} style={{ cursor: 'pointer', color: '#ff4d4f' }} />
+                >
+                  <DeleteFilled onClick={() => {}} style={{ cursor: 'pointer', color: '#ff4d4f' }} />
+                </Popconfirm>
               </div>
             </Card>
           </Col>

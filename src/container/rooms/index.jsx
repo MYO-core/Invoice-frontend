@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { Row, Col, Button, Modal, Input, Popconfirm, Select, Switch } from 'antd';
 const { Search } = Input;
-import { Space, Table } from 'antd';
+import { Space, Table, Pagination } from 'antd';
 import { EditFilled, DeleteFilled } from '@ant-design/icons';
 import AddCms from './AddCms';
 import Cards1 from './Cards';
@@ -19,6 +19,8 @@ const Cms = () => {
   const [statusChange, setStatusChange] = useState('');
   const [currentStore, setCurrentStore] = useAtom(currentStoreId);
   const [isAvailable, setIsAvailable] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [refreshData, setRefreshData] = useState(0);
 
   const [isEditCms, setIsEditCms] = useState({ isOpen: false, cmsId: '' });
   const [allCms, setAllCms] = useState([]);
@@ -103,10 +105,11 @@ const Cms = () => {
   ];
 
   const getAllData = ({ search, type, isAvailable }) => {
-    getAllCms({ start, limit: 10, search, type, isAvailable, store_id: currentStore })
+    getAllCms({ start, limit: 12, search, type, isAvailable, store_id: currentStore })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
+          setTotalCount(res?.data?.count || 10);
         }
       })
       .catch((err) => console.log('err', err));
@@ -114,7 +117,7 @@ const Cms = () => {
 
   useEffect(() => {
     getAllData({ search: searchValue, type: statusChange, isAvailable });
-  }, [searchValue, statusChange, isAvailable, currentStore]);
+  }, [searchValue, statusChange, isAvailable, currentStore, refreshData, start]);
 
   const onSearch = (value) => {
     setSearchValue(value);
@@ -122,8 +125,9 @@ const Cms = () => {
   const handleStatusChange = (value) => {
     setStatusChange(value);
   };
-  const geIsActive = (value) => {
-    setIsAvailable(!isAvailable);
+  const changeStart = (value) => {
+    let s = 10 * (value - 1);
+    setStart(s);
   };
 
   return (
@@ -184,13 +188,23 @@ const Cms = () => {
             >
               {/* <Table size="small" scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allCms} /> */}
               <Cards1 allData={allCms} setIsEditCms={setIsEditCms} />
+              <div className="mt-2 flex justify-end">
+                <Pagination
+                  // current={1}
+                  pageSize={12}
+                  total={totalCount} // Total number of items
+                  onChange={changeStart}
+                  showSizeChanger={false} // Allows changing the number of items per page
+                  // pageSizeOptions={['10']} // Page size options
+                />
+              </div>
             </Cards>
           </Col>
         </Row>
       </GlobalUtilityStyle>
 
       <Modal
-        title={`${isAddCms ? 'Add' : 'Edit'}`}
+        title={`${isAddCms ? 'Add Room' : 'Edit Room'}`}
         destroyOnClose
         open={isAddCms || isEditCms.isOpen}
         width={1024}
@@ -207,6 +221,8 @@ const Cms = () => {
           isEditCms={isEditCms}
           setIsEditCms={setIsEditCms}
           currentStore={currentStore}
+          refreshData={refreshData}
+          setRefreshData={setRefreshData}
         />
       </Modal>
     </>

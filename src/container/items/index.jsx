@@ -10,12 +10,22 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 import { deleteCms, getAllCms } from '../../utility/services/restroItems';
 import { currentStoreId } from '../../globalStore/index';
 const { Search } = Input;
+const mealType = {
+  starter: 'Starter',
+  lunch: 'Lunch',
+  main_course: 'Main Course',
+  dessert: 'Dessert',
+  side: 'Side',
+  beverage: 'Beverage',
+};
+
 const Cms = () => {
   const [isAddCms, setisAddCms] = useState(false);
   const [start, setStart] = useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [isEditCms, setIsEditCms] = useState({ isOpen: false, cmsId: '' });
   const [allCms, setAllCms] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
 
   const [currentStore, setCurrentStore] = useAtom(currentStoreId);
 
@@ -44,6 +54,12 @@ const Cms = () => {
       width: 140,
     },
     {
+      title: 'Item Code',
+      dataIndex: 'item_code',
+      key: 'item_code',
+      width: 140,
+    },
+    {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
@@ -58,8 +74,11 @@ const Cms = () => {
     {
       title: 'Meal Type',
       dataIndex: 'meal_type',
-      key: 'meal_type',
+      // key: 'meal_type',
       width: 150,
+      render: (_, record) => {
+        return mealType[record.meal_type];
+      },
     },
 
     {
@@ -71,7 +90,7 @@ const Cms = () => {
             <EditFilled />
           </Button>
           <Popconfirm
-            title="Are you sure to delete this task?"
+            title="Are you sure to delete this Item?"
             onConfirm={() => {
               deleteCms({ id: record?._id })
                 .then((res) => {
@@ -95,10 +114,11 @@ const Cms = () => {
   ];
 
   const getAllData = () => {
-    getAllCms({ start, limit: 10 })
+    getAllCms({ start, limit: 10, search: searchValue })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
+          setTotalCount(res?.data?.count);
         }
       })
       .catch((err) => console.log('err', err));
@@ -106,10 +126,16 @@ const Cms = () => {
 
   useEffect(() => {
     getAllData();
-  }, []);
+  }, [searchValue, start]);
 
   const onSearch = (value) => {
     setSearchValue(value);
+  };
+
+  const setPageSize = (value) => {
+    const { current } = value;
+    let s = 10 * (current - 1);
+    setStart(s);
   };
 
   return (
@@ -137,7 +163,13 @@ const Cms = () => {
                     /> */}
                   </div>
                   <div>
-                    <Search placeholder="search" allowClear enterButton="Search" size="middle" onSearch={onSearch} />
+                    <Search
+                      placeholder="Name or code"
+                      allowClear
+                      enterButton="Search"
+                      size="middle"
+                      onSearch={onSearch}
+                    />
                   </div>
                 </div>
               }
@@ -147,7 +179,18 @@ const Cms = () => {
                 </Button>
               }
             >
-              <Table size="small" scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allCms} />
+              <Table
+                size="small"
+                scroll={{ x: '100%', y: 'auto' }}
+                columns={columns}
+                dataSource={allCms}
+                pagination={{
+                  pageSize: 10, // Number of items per page
+                  total: totalCount, // Total number of items
+                  showSizeChanger: false,
+                }}
+                onChange={setPageSize}
+              />
             </Cards>
           </Col>
         </Row>

@@ -6,7 +6,7 @@ import { addCms, getSingleCms, updateCms } from '../../utility/services/tables';
 
 const { Option } = Select;
 
-const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStore }) => {
+const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStore, setNewRecord, newRecord }) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
@@ -31,7 +31,8 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
       })
         .then((res) => {
           setIsEditCms({ isOpen: false, cmsId: '' });
-          getAllData();
+          // getAllData();
+          setNewRecord(newRecord + 1);
           message.success('Data updated successfully');
         })
         .catch((err) => console.log('err', err));
@@ -41,7 +42,8 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
       })
         ?.then((res) => {
           setisAddCms(false);
-          getAllData();
+          // getAllData();
+          setNewRecord(newRecord + 1);
           message.success('Tables added successfully');
         })
         .catch((err) => {
@@ -88,7 +90,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                   {fields.map((field, index) => (
                     <div key={field.key} style={{ marginBottom: 20 }}>
                       <Row gutter={16} align="middle">
-                        <Col span={8}>
+                        <Col xs={24} sm={24} md={24} lg={8}>
                           <Form.Item
                             {...field}
                             label={`Table Number ${index + 1}`}
@@ -104,7 +106,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                             <Input placeholder="Enter table number" />
                           </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col xs={24} sm={24} md={24} lg={8}>
                           <Form.Item
                             {...field}
                             label="Number of Seats"
@@ -125,7 +127,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                             <InputNumber min={1} placeholder="Enter number of seats" style={{ width: '100%' }} />
                           </Form.Item>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={12} sm={12} md={12} lg={6}>
                           <Form.Item
                             {...field}
                             label="Status"

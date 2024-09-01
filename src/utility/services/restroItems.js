@@ -5,8 +5,9 @@ const addCms = async ({ body }) => {
   return response;
 };
 
-const getAllCms = async ({ start = 0, limit = 10 }) => {
-  const response = await callApi.get(`/restroItems?start=${start}&limit=${limit}`);
+const getAllCms = async ({ start = 0, limit = 10, search }) => {
+  let searchQuery = search ? `&search=${search}` : '';
+  const response = await callApi.get(`/restroItems?start=${start}&limit=${limit}${searchQuery}`);
   return response;
 };
 

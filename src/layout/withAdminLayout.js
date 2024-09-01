@@ -222,7 +222,7 @@ const ThemeLayout = (WrappedComponent) => {
                         <span className="inline-block w-full font-medium admin-footer__copyright md:text-center text-theme-gray dark:text-white60 md:mb-[10px]">
                           © {new Date().getFullYear()}
                           <Link className="mx-[4px] text-primary" to="#">
-                            Manage Your Org
+                            Org ease
                           </Link>
                         </span>
                       </Col>

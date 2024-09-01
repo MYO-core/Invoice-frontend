@@ -20,7 +20,7 @@ const Components = lazy(() => import('../../container/salaryComponents'));
 const Packages = lazy(() => import('../../container/salaryPackage/index'));
 const Rooms = lazy(() => import('../../container/rooms'));
 const Tables = lazy(() => import('../../container/tables'));
-const Items = lazy(() => import('../../container/restroItems'));
+const Items = lazy(() => import('../../container/items'));
 const Orders = lazy(() => import('../../container/orders'));
 const Products = lazy(() => import('../../container/products'));
 const Stores = lazy(() => import('../../container/stores'));

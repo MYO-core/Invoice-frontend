@@ -1,84 +1,49 @@
 import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Spin, Upload, message, Switch } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MinusCircleOutlined } from '@ant-design/icons';
-import { addCms, getSingleCms, updateCms } from '../../utility/services/orders';
+import { addCms } from '../../utility/services/orders';
 import { getAllCms } from '../../utility/services/restroItems';
-import { getAllTables } from '../../utility/services/tables';
 
 const { Option } = Select;
 
-const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStore }) => {
+const AddRoom = ({ tableData, setVisible, visible, currentStore }) => {
   const [loading, setLoading] = useState(false);
   const [item, setItem] = useState([]);
   const [search, setSearch] = useState('');
-  const [tableDropdowns, setTableDropdowns] = useState([]);
 
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
     const body = values;
-
-    if (isEditCms?.cmsId) {
-      updateCms({
-        id: isEditCms?.cmsId,
-        body: body,
+    body.store_id = currentStore;
+    addCms({
+      body: body,
+    })
+      ?.then((res) => {
+        message.success('Data added successfully');
+        setVisible(false);
       })
-        .then((res) => {
-          setIsEditCms({ isOpen: false, cmsId: '' });
-          getAllData();
-          message.success('Data updated successfully');
-        })
-        .catch((err) => console.log('err', err));
-    } else {
-      body.store_id = currentStore;
-      addCms({
-        body: body,
-      })
-        ?.then((res) => {
-          setisAddCms(false);
-          getAllData();
-          message.success('Data added successfully');
-        })
-        .catch((err) => {
-          console.log('err :>> ', err);
-        });
-    }
+      .catch((err) => {
+        console.log('err :>> ', err);
+      });
   };
-
   useEffect(() => {
-    // populate single data
-    if (isEditCms?.cmsId) {
-      setLoading(true);
-      getSingleCms({ id: isEditCms?.cmsId })
-        .then((res) => {
-          form.setFieldsValue(res?.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log('err', err);
-          setLoading(false);
-        });
-    }
-  }, [isEditCms?.cmsId]);
-
-  useEffect(() => {
-    getAllCms({ search })
+    getAllCms({})
       .then((data) => {
         setItem(data.data.rows);
       })
       .catch((e) => {
         message.error('Error While Fetching Items');
       });
-  }, [search]);
+  }, [form, search]);
   useEffect(() => {
-    getAllTables({})
-      .then((data) => {
-        setTableDropdowns(data.data.rows);
-      })
-      .catch((e) => {
-        message.error('Error While Fetching Items');
+    if (visible) {
+      form.resetFields(); // Reset the form fields
+      form.setFieldsValue({
+        table_id: tableData.id,
       });
-  }, []);
+    }
+  }, [form, visible]);
   return (
     <>
       <Spin spinning={loading}>
@@ -92,11 +57,9 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                   rules={[{ required: true, message: 'Please select the table ID' }]}
                 >
                   <Select>
-                    {tableDropdowns.map((data) => (
-                      <Option value={data.id}>
-                        {data.table_number} - {' (' + data.no_of_seats + ' Seater )'}
-                      </Option>
-                    ))}
+                    <Option value={tableData.id}>
+                      {tableData.table_number} - {' (' + tableData.no_of_seats + ' Seater )'}
+                    </Option>
                   </Select>
                 </Form.Item>
               </Col>
@@ -202,7 +165,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                             label="Quantity"
                             rules={[{ required: true, message: 'Please enter the quantity' }]}
                           >
-                            <InputNumber min={0} defaultValue={1} style={{ width: '100%' }} />
+                            <InputNumber min={0} style={{ width: '100%' }} />
                           </Form.Item>
                         </Col>
                         <Col xs={12} sm={12} md={12} lg={6}>

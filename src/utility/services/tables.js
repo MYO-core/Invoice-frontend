@@ -7,7 +7,7 @@ const addCms = async ({ body }) => {
 
 const getAllTables = async ({ start = 0, limit = 10, search, type, isAvailable, store_id }) => {
   let searchQuery = search ? `&search=${search}` : ``;
-  let typeQuery = type ? `&roomType=${type}` : ``;
+  let typeQuery = type ? `&status=${type}` : ``;
   let storeQuery = store_id ? `&store_id=${store_id}` : ``;
   let isAvailableQ = isAvailable ? `&isAvailable=${isAvailable}` : ``;
 

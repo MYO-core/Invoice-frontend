@@ -17,6 +17,7 @@ const Cms = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isEditCms, setIsEditCms] = useState({ isOpen: false, cmsId: '' });
   const [allCms, setAllCms] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
 
   const [currentStore, setCurrentStore] = useAtom(currentStoreId);
 
@@ -45,9 +46,9 @@ const Cms = () => {
       width: 140,
     },
     {
-      title: 'Customer',
-      dataIndex: 'customer_name',
-      key: 'customer_name',
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
       width: 140,
     },
     {
@@ -101,6 +102,7 @@ const Cms = () => {
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
+          setTotalCount(res?.data?.count);
         }
       })
       .catch((err) => console.log('err', err));
@@ -108,10 +110,15 @@ const Cms = () => {
 
   useEffect(() => {
     getAllData();
-  }, []);
+  }, [start, searchValue]);
 
   const onSearch = (value) => {
     setSearchValue(value);
+  };
+  const setPageSize = (value) => {
+    const { current } = value;
+    let s = 10 * (current - 1);
+    setStart(s);
   };
 
   return (
@@ -149,14 +156,25 @@ const Cms = () => {
                 </Button>
               }
             >
-              <Table size="small" scroll={{ x: '100%', y: 'auto' }} columns={columns} dataSource={allCms} />
+              <Table
+                size="small"
+                scroll={{ x: '100%', y: 'auto' }}
+                columns={columns}
+                dataSource={allCms}
+                pagination={{
+                  pageSize: 10, // Number of items per page
+                  total: totalCount, // Total number of items
+                  showSizeChanger: false,
+                }}
+                onChange={setPageSize}
+              />
             </Cards>
           </Col>
         </Row>
       </GlobalUtilityStyle>
 
       <Modal
-        title={`${isAddCms ? 'Add' : 'Edit'}`}
+        title={`${isAddCms ? 'Add Order' : 'Edit Order'}`}
         destroyOnClose
         open={isAddCms || isEditCms.isOpen}
         width={1024}

@@ -8,7 +8,7 @@ import { addCms, getSingleCms, updateCms } from '../../utility/services/rooms';
 
 const { Option } = Select;
 
-const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStore }) => {
+const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStore, setRefreshData, refreshData }) => {
   const [filesData, setFilesData] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [isPreviewModal, setIsPreviewModal] = useState(false);
@@ -60,8 +60,9 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
       })
         .then((res) => {
           setIsEditCms({ isOpen: false, cmsId: '' });
-          getAllData();
-          message.success('Data updated successfully');
+          // getAllData();
+          setRefreshData(refreshData + 1);
+          message.success('Updated successfully');
         })
         .catch((err) => console.log('err', err));
     } else {
@@ -70,8 +71,9 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
       })
         ?.then((res) => {
           setisAddCms(false);
-          getAllData();
-          message.success('Data added successfully');
+          // getAllData();
+          setRefreshData(refreshData + 1);
+          message.success('Added successfully');
         })
         .catch((err) => {
           console.log('err :>> ', err);
