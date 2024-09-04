@@ -79,11 +79,33 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
         message.error('Error While Fetching Items');
       });
   }, []);
+  const getAllItems = () => {
+    let data = form.getFieldsValue(['order_items']);
+    let total = 0;
+    data?.order_items?.map((d) => {
+      let t = Number(d?.price) * Number(d?.quantity);
+      total += t;
+    });
+    let tax_precent = form.getFieldValue('tax_precent');
+    let discount = form.getFieldValue('discount_precent');
+    let pt = 0.01 * tax_precent * total;
+    total += pt;
+    let dp = 0.01 * discount * total;
+    total -= dp;
+    form.setFieldValue('total_price', total);
+  };
   return (
     <>
       <Spin spinning={loading}>
         <div>
-          <Form name="order" form={form} layout="vertical" onFinish={onFinish} autoComplete="off">
+          <Form
+            name="order"
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            onChange={getAllItems}
+            autoComplete="off"
+          >
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
@@ -170,9 +192,11 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                                     [name]: {
                                       item_name: selectedItem?.name,
                                       price: selectedItem?.price,
+                                      quantity: 1,
                                     },
                                   },
                                 });
+                                getAllItems();
                               }}
                             >
                               {item.map((data) => (
@@ -210,7 +234,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                             {...restField}
                             name={[name, 'price']}
                             fieldKey={[fieldKey, 'price']}
-                            label="Price"
+                            label="Unit Price"
                             rules={[{ required: true, message: 'Please enter the price' }]}
                           >
                             <InputNumber min={0} precision={2} style={{ width: '100%' }} />
@@ -218,7 +242,10 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                         </Col>
                         <Col span={2}>
                           <MinusCircleOutlined
-                            onClick={() => remove(name)}
+                            onClick={() => {
+                              remove(name);
+                              getAllItems();
+                            }}
                             style={{ fontSize: '20px', color: 'red' }}
                           />
                         </Col>
@@ -237,7 +264,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
             <div className="flex justify-end gap-2 mt-5">
               <Button
                 onClick={() => {
-                  setIsOrderModalOpen(false);
+                  setisAddCms(false);
                 }}
               >
                 Cancel

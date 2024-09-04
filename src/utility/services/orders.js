@@ -5,8 +5,14 @@ const addCms = async ({ body }) => {
   return response;
 };
 
-const getAllCms = async ({ start, limit }) => {
-  const response = await callApi.get(`/orders?start=${start}&limit=${limit}`);
+const getAllCms = async ({ start, limit, status, search, dates }) => {
+  let searchQuery = search ? `&search=${search}` : '';
+  let statusQuery = status ? `&status=${status}` : '';
+  let dateQuery = '';
+  if (dates.length === 2) {
+    dateQuery = `&start_date=${dates[0]}&end_date=${dates[1]}`;
+  }
+  const response = await callApi.get(`/orders?start=${start}&limit=${limit}${searchQuery}${statusQuery}${dateQuery}`);
   return response;
 };
 

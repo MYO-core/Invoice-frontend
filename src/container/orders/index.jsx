@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Button, Modal, Input, Popconfirm } from 'antd';
+import { Row, Col, Button, Modal, Input, Popconfirm, Select, DatePicker } from 'antd';
 import { useAtom } from 'jotai';
 import { Space, Table } from 'antd';
 import moment from 'moment';
@@ -11,6 +11,7 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 import { deleteCms, getAllCms } from '../../utility/services/orders';
 import { currentStoreId } from '../../globalStore/index';
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 const Cms = () => {
   const [isAddCms, setisAddCms] = useState(false);
   const [start, setStart] = useState(0);
@@ -18,6 +19,8 @@ const Cms = () => {
   const [isEditCms, setIsEditCms] = useState({ isOpen: false, cmsId: '' });
   const [allCms, setAllCms] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [status, setStatus] = useState('');
+  const [dates, setDates] = useState([]);
 
   const [currentStore, setCurrentStore] = useAtom(currentStoreId);
 
@@ -98,7 +101,7 @@ const Cms = () => {
   ];
 
   const getAllData = () => {
-    getAllCms({ start, limit: 10 })
+    getAllCms({ start, limit: 10, search: searchValue, status: status, dates })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
@@ -110,21 +113,28 @@ const Cms = () => {
 
   useEffect(() => {
     getAllData();
-  }, [start, searchValue]);
+  }, [start, searchValue, status, dates]);
 
   const onSearch = (value) => {
     setSearchValue(value);
+  };
+
+  const handleDateRangeChange = (dates, dateStrings) => {
+    setDates(dateStrings);
   };
   const setPageSize = (value) => {
     const { current } = value;
     let s = 10 * (current - 1);
     setStart(s);
   };
+  const handleStatusChange = (value) => {
+    setStatus(value);
+  };
 
   return (
     <>
       <PageHeader
-        title="Items"
+        title="Orders"
         routes={PageRoutes}
         className="flex items-center justify-between px-8 xl:px-[15px] pt-2 pb-6 sm:pb-[30px] bg-transparent sm:flex-col"
       />
@@ -133,21 +143,27 @@ const Cms = () => {
           <Col sm={24} xs={24} lg={24} className="">
             <Cards
               title={
-                <div className="flex items-center gap-4">
-                  <div>
-                    {/* <Select
-                      style={{
-                        width: 120,
-                      }}
-                      size="middle"
-                      placeholder="Role"
-                      onChange={handleStatusChange}
-                      options={allRoles}
-                    /> */}
-                  </div>
-                  <div>
-                    <Search placeholder="search" allowClear enterButton="Search" size="middle" onSearch={onSearch} />
-                  </div>
+                <div>
+                  <Row gutter={[16, 16]} align="middle">
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <Select
+                        style={{ width: '100%' }}
+                        size="middle"
+                        placeholder="Status"
+                        onChange={handleStatusChange}
+                      >
+                        <Option value="">All</Option>
+                        <Option value="pending">Pending</Option>
+                        <Option value="preparing">Preparing</Option>
+                        <Option value="served">Served</Option>
+                        <Option value="paid">Paid</Option>
+                        <Option value="canceled">Canceled</Option>
+                      </Select>
+                    </Col>
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <RangePicker size="middle" onChange={handleDateRangeChange} style={{ width: '100%' }} />
+                    </Col>
+                  </Row>
                 </div>
               }
               moreBtn={
