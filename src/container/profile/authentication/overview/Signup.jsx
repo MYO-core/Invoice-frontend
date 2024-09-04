@@ -57,7 +57,7 @@ function SignUp() {
           <div className="px-10 pt-8 pb-6">
             <Form name="register" onFinish={handleSubmit} layout="vertical">
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item
                     label="Name"
                     name="name"
@@ -66,7 +66,7 @@ function SignUp() {
                     <Input placeholder="Full name" />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item
                     label="Organisation Name"
                     name="org_name"
@@ -77,7 +77,7 @@ function SignUp() {
                 </Col>
               </Row>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item
                     label="Email Address"
                     name="email"
@@ -86,7 +86,7 @@ function SignUp() {
                     <Input placeholder="name@example.com" />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item
                     label="Password"
                     name="password"
@@ -97,7 +97,7 @@ function SignUp() {
                 </Col>
               </Row>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item
                     label="Company Strength"
                     name="strength"
@@ -111,38 +111,38 @@ function SignUp() {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item label="Website" name="website">
                     <Input />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item label="City" name="city" rules={[{ required: true, message: 'required!' }]}>
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item label="State" name="state" rules={[{ required: true, message: 'required!' }]}>
                     <Input />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item label="Country" name="country" rules={[{ required: true, message: 'required!' }]}>
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} md={12}>
                   <Form.Item label="Phone Number" name="phoneNumber" rules={[{ required: true, message: 'required!' }]}>
                     <Input />
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={16}>
-                <Col span={16}>
+                <Col xs={24}>
                   <Form.Item label="Address" name="address" rules={[{ required: true, message: 'required!' }]}>
                     <Input />
                   </Form.Item>
