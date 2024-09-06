@@ -168,7 +168,7 @@ const Cms = () => {
         />
       </Modal>
       <Drawer
-        title="Add Order"
+        title={tableData.current_order ? 'Update Order #' + tableData.current_order : 'Add Order'}
         placement="right"
         onClose={onClose}
         open={visible}
@@ -178,6 +178,8 @@ const Cms = () => {
           setVisible={setVisible}
           tableData={tableData}
           visible={visible}
+          allCms={allCms}
+          setAllCms={setAllCms}
           // setTableData={setTableData}
           currentStore={currentStore}
         />

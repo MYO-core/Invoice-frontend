@@ -5,7 +5,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import withAdminLayout from '../../layout/withAdminLayout';
 
 // const Dashboard = lazy(() => import('../../container/dashboard'));
-const DemoEight = lazy(() => import('../../container/dashboard/DemoSeven'));
+const DemoEight = lazy(() => import('../../container/dashboard/newDashboard'));
 const Roles = lazy(() => import('../../container/roles'));
 const Cms = lazy(() => import('../../container/cms'));
 const Bookings = lazy(() => import('../../container/bookings'));

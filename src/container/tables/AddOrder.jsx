@@ -1,31 +1,68 @@
 import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Spin, Upload, message, Switch } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MinusCircleOutlined } from '@ant-design/icons';
-import { addCms } from '../../utility/services/orders';
+import { addCms, getSingleCms, updateCms } from '../../utility/services/orders';
 import { getAllCms } from '../../utility/services/restroItems';
 
 const { Option } = Select;
 
-const AddRoom = ({ tableData, setVisible, visible, currentStore }) => {
+const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllCms }) => {
   const [loading, setLoading] = useState(false);
   const [item, setItem] = useState([]);
   const [search, setSearch] = useState('');
+  const [deletedItem, setDeletedItem] = useState([]);
 
   const [form] = Form.useForm();
 
+  const updateTableStatus = (orderId, status) => {
+    let dd = allCms.map((d) => {
+      if (d.id === tableData.id) {
+        d.status = status;
+        d.current_order = orderId;
+        return d;
+      }
+      return d;
+    });
+    setAllCms(dd);
+  };
   const onFinish = (values) => {
     const body = values;
-    body.store_id = currentStore;
-    addCms({
-      body: body,
-    })
-      ?.then((res) => {
-        message.success('Data added successfully');
-        setVisible(false);
+    body.table_id = body.table_id.toString();
+
+    if (tableData.current_order) {
+      body.order_items = [...body.order_items, ...deletedItem];
+      updateCms({
+        id: tableData.current_order,
+        body: body,
       })
-      .catch((err) => {
-        console.log('err :>> ', err);
-      });
+        .then((res) => {
+          let status = body.status === 'paid' ? 'available' : 'booked';
+          let orderId = body.status === 'paid' ? null : tableData.current_order;
+          updateTableStatus(orderId, status);
+          message.success('Data updated successfully');
+        })
+        .catch((err) => {
+          message.error('Something Went Wrong');
+          console.log('err :>> ', err);
+        });
+    } else {
+      body.store_id = currentStore;
+      addCms({
+        body: body,
+      })
+        ?.then((res) => {
+          // console.log(res);
+          let orderId = body.status === 'paid' ? null : res?.data?.id;
+          let status = body.status === 'paid' ? 'available' : 'booked';
+          updateTableStatus(orderId, status);
+          message.success('Data added successfully');
+          setVisible(false);
+        })
+        .catch((err) => {
+          message.error('Something Went Wrong');
+          console.log('err :>> ', err);
+        });
+    }
   };
   useEffect(() => {
     getAllCms({})
@@ -36,12 +73,33 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore }) => {
         message.error('Error While Fetching Items');
       });
   }, [form, search]);
+
+  useEffect(() => {
+    setDeletedItem([]);
+  }, []);
+
+  const getOrder = (id) => {
+    setLoading(true);
+    getSingleCms({ id })
+      .then((res) => {
+        form.setFieldsValue(res?.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        message.error(err?.data?.message || 'Something Went Wrong');
+        console.log('err', err);
+        setLoading(false);
+      });
+  };
   useEffect(() => {
     if (visible) {
       form.resetFields(); // Reset the form fields
       form.setFieldsValue({
         table_id: tableData.id,
       });
+      if (tableData.current_order) {
+        getOrder(tableData.current_order);
+      }
     }
   }, [form, visible]);
 
@@ -207,7 +265,14 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore }) => {
                         <Col span={2}>
                           <MinusCircleOutlined
                             onClick={() => {
+                              const itemToBeDeleted = form.getFieldValue('order_items')[name];
                               remove(name);
+                              if (tableData.current_order) {
+                                console.log(deletedItem, itemToBeDeleted);
+                                let dd = deletedItem;
+                                dd.push({ ...itemToBeDeleted, deleted: true });
+                                setDeletedItem(dd);
+                              }
                               getAllItems();
                             }}
                             style={{ fontSize: '20px', color: 'red' }}

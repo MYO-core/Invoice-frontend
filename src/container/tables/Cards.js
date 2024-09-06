@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Col, Row, Tag, Typography, Collapse, Button, Popconfirm } from 'antd';
 
-import { EditFilled, DeleteFilled, PlusOutlined } from '@ant-design/icons';
+import { EditFilled, DeleteFilled, PlusOutlined, EyeOutlined } from '@ant-design/icons';
 const { Text, Title } = Typography;
 const { Panel } = Collapse;
 
@@ -16,14 +16,24 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
                 <Title level={5}>
                   <div className="flex justify-between items-center">
                     <span className="text-sm sm:text-base">Table No:- {room.table_number}</span>
-                    <span className="ml-4 sm:ml-16">
-                      <PlusOutlined
-                        onClick={() => {
-                          setVisible(true);
-                          setTableData(room);
-                        }}
-                        style={{ cursor: 'pointer', color: '#1890ff' }}
-                      />
+                    <span
+                      className="ml-5 sm:ml-16 "
+                      onClick={() => {
+                        setVisible(true);
+                        setTableData(room);
+                      }}
+                    >
+                      {room.current_order ? (
+                        <Tag color="blue">
+                          <EyeOutlined className="mr-1" />
+                          view Order
+                        </Tag>
+                      ) : (
+                        <Tag color="green">
+                          <PlusOutlined className="mr-1" />
+                          Add Order
+                        </Tag>
+                      )}
                     </span>
                   </div>
                 </Title>
@@ -40,12 +50,23 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
               <Text strong>Total Seats: </Text>
               <Text>{room.no_of_seats}</Text>
               <br />
-
               <Text strong>Status: </Text>
               {room.status === 'available' ? (
                 <Tag color="green">{room.status}</Tag>
               ) : (
                 <Tag color="red">{room.status}</Tag>
+              )}
+              <br />
+              {room.current_order && (
+                <>
+                  <Text strong>Current Order: </Text>
+                  {'#' + room.current_order}
+                </>
+              )}
+              {!room.current_order && (
+                <>
+                  <Text strong>Waiting For Orders</Text>
+                </>
               )}
               <div className="flex justify-between mt-2">
                 <EditFilled
