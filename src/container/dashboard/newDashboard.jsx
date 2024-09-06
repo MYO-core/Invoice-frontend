@@ -1,153 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { Row, Col, Card, Statistic, Layout, Typography } from 'antd';
 import { Line, Bar } from '@ant-design/charts';
 import { UserOutlined, ShopOutlined, HomeOutlined } from '@ant-design/icons';
+import { getRestrauntStats, getHotelStats } from '../../utility/services/dashboard';
 
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
 
-const Dashboard = ({}) => {
-  let restaurantData = {
-    counts: [
-      {
-        value: '12',
-        type: 'item_count',
-      },
-      {
-        value: '9',
-        type: 'total_orders',
-      },
-      {
-        value: '12',
-        type: 'available_tables',
-      },
-      {
-        value: '6217.33',
-        type: 'revenue',
-      },
-    ],
-    monthlyOrders: [
-      {
-        count: '3',
-        date_part: 8,
-      },
-      {
-        count: '6',
-        date_part: 9,
-      },
-    ],
-    top5Products: [
-      {
-        name: 'Butter roti',
-        count: '3',
-      },
-      {
-        name: 'Chicken do pyaza',
-        count: '3',
-      },
-      {
-        name: 'Butter chicken ',
-        count: '3',
-      },
-      {
-        name: 'Plain roti ',
-        count: '1',
-      },
-      {
-        name: 'chikan do pyaza',
-        count: '3',
-      },
-    ],
-    monthlyIncome: [
-      {
-        sum: '3800.00',
-        date_part: 8,
-      },
-      {
-        sum: '2417.33',
-        date_part: 9,
-      },
-    ],
-  };
-  let hotelData = {
-    counts: [
-      {
-        value: 10,
-        type: 'customer_count',
-      },
-      {
-        value: 12,
-        type: 'total rooms',
-      },
-      {
-        value: 12,
-        type: 'available_rooms',
-      },
-      {
-        value: 231200,
-        type: 'revenue',
-      },
-    ],
-    monthlyBokings: [
-      {
-        sum: 231200,
-        date_part: 8,
-      },
-    ],
-    monthlyIncome: [
-      {
-        sum: 231200,
-        date_part: 8,
-      },
-    ],
-    roomBookedMonthly: [
-      {
-        count: '2',
-        date_part: 8,
-      },
-    ],
-    maxBookedRoms: [
-      {
-        roomType: 'double',
-        count: '1',
-      },
-      {
-        roomType: 'single',
-        count: '4',
-      },
-    ],
-    customerVisitMonthly: [
-      {
-        sum: '32',
-        date_part: 8,
-      },
-    ],
-  };
-  // Extract data for easy access
-  const hotelCounts = hotelData.counts.reduce((acc, item) => {
-    acc[item.type] = item.value;
-    return acc;
-  }, {});
+const Dashboard = () => {
+  const [restaurantData, setRestaurantData] = useState({});
+  const [hotelData, setHotelData] = useState({});
 
-  const restaurantCounts = restaurantData.counts.reduce((acc, item) => {
-    acc[item.type] = item.value;
-    return acc;
-  }, {});
+  useEffect(() => {
+    getRestrauntStats()
+      .then((d) => {
+        setRestaurantData(d.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    getHotelStats()
+      .then((d) => {
+        setHotelData(d.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  // Safely access hotelData and restaurantData properties
+  const hotelCounts =
+    hotelData?.counts?.reduce((acc, item) => {
+      acc[item.type] = item.value;
+      return acc;
+    }, {}) || {};
+
+  const restaurantCounts =
+    restaurantData?.counts?.reduce((acc, item) => {
+      acc[item.type] = item.value;
+      return acc;
+    }, {}) || {};
 
   // Line chart for hotel monthly bookings and income
-  const hotelMonthlyData = hotelData.monthlyBokings
-    .map((item) => ({
+  const hotelMonthlyData = [
+    ...(hotelData?.monthlyBookings?.map((item) => ({
       month: `Month ${item.date_part}`,
       value: item.sum,
       type: 'Bookings',
-    }))
-    .concat(
-      hotelData.monthlyIncome.map((item) => ({
-        month: `Month ${item.date_part}`,
-        value: item.sum,
-        type: 'Income',
-      })),
-    );
+    })) || []),
+    ...(hotelData?.monthlyIncome?.map((item) => ({
+      month: `Month ${item.date_part}`,
+      value: item.sum,
+      type: 'Income',
+    })) || []),
+  ];
 
   const hotelMonthlyConfig = {
     data: hotelMonthlyData,
@@ -170,19 +76,18 @@ const Dashboard = ({}) => {
   };
 
   // Line chart for restaurant monthly orders and income
-  const restaurantMonthlyData = restaurantData.monthlyOrders
-    .map((item) => ({
+  const restaurantMonthlyData = [
+    ...(restaurantData?.monthlyOrders?.map((item) => ({
       month: `Month ${item.date_part}`,
       value: item.count,
       type: 'Orders',
-    }))
-    .concat(
-      restaurantData.monthlyIncome.map((item) => ({
-        month: `Month ${item.date_part}`,
-        value: item.sum,
-        type: 'Income',
-      })),
-    );
+    })) || []),
+    ...(restaurantData?.monthlyIncome?.map((item) => ({
+      month: `Month ${item.date_part}`,
+      value: item.sum,
+      type: 'Income',
+    })) || []),
+  ];
 
   const restaurantMonthlyConfig = {
     data: restaurantMonthlyData,
@@ -204,11 +109,21 @@ const Dashboard = ({}) => {
     },
   };
 
+  function shortenText(text, wordLimit = 2) {
+    const words = text.split(' ');
+
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(' ') + '...';
+    }
+
+    return text;
+  }
   // Bar chart for hotel room bookings
-  const hotelRoomsData = hotelData.maxBookedRoms.map((item) => ({
-    roomType: item.roomType,
-    count: parseInt(item.count, 10),
-  }));
+  const hotelRoomsData =
+    hotelData?.maxBookedRooms?.map((item) => ({
+      roomType: item.roomType,
+      count: parseInt(item.count, 10),
+    })) || [];
 
   const hotelRoomsConfig = {
     data: hotelRoomsData,
@@ -230,10 +145,11 @@ const Dashboard = ({}) => {
   };
 
   // Bar chart for top 5 products in restaurant
-  const topProductsData = restaurantData.top5Products.map((item) => ({
-    name: item.name,
-    count: parseInt(item.count, 10),
-  }));
+  const topProductsData =
+    restaurantData?.top5Products?.map((item) => ({
+      name: shortenText(item.name),
+      count: parseInt(item.count, 10),
+    })) || [];
 
   const topProductsConfig = {
     data: topProductsData,
@@ -256,14 +172,14 @@ const Dashboard = ({}) => {
 
   return (
     <Layout>
-      {/* <Header style={{ backgroundColor: '#001529', padding: '16px' }}></Header> */}
+      <Suspense fallback={<div>Loading...</div>}></Suspense>
       <Content style={{ padding: '20px' }}>
         <Row gutter={16}>
           <Col xs={24} sm={12} lg={6}>
             <Card>
               <Statistic
                 title="Hotel Customers"
-                value={hotelCounts.customer_count}
+                value={hotelCounts?.customer_count || 0}
                 prefix={<UserOutlined />}
                 valueStyle={{ color: '#3f8600' }}
               />
@@ -273,7 +189,7 @@ const Dashboard = ({}) => {
             <Card>
               <Statistic
                 title="Total Rooms"
-                value={hotelCounts['total rooms']}
+                value={hotelCounts?.['total rooms'] || 0}
                 prefix={<HomeOutlined />}
                 valueStyle={{ color: '#1890ff' }}
               />
@@ -283,7 +199,7 @@ const Dashboard = ({}) => {
             <Card>
               <Statistic
                 title="Available Rooms"
-                value={hotelCounts.available_rooms}
+                value={hotelCounts?.available_rooms || 0}
                 prefix={<ShopOutlined />}
                 valueStyle={{ color: '#cf1322' }}
               />
@@ -293,7 +209,7 @@ const Dashboard = ({}) => {
             <Card>
               <Statistic
                 title="Hotel Revenue"
-                value={hotelCounts.revenue}
+                value={hotelCounts?.revenue || 0}
                 prefix="₹"
                 valueStyle={{ color: '#faad14' }}
               />
@@ -306,7 +222,7 @@ const Dashboard = ({}) => {
             <Card>
               <Statistic
                 title="Restaurant Items"
-                value={restaurantCounts.item_count}
+                value={restaurantCounts?.item_count || 0}
                 prefix={<ShopOutlined />}
                 valueStyle={{ color: '#52c41a' }}
               />
@@ -316,7 +232,7 @@ const Dashboard = ({}) => {
             <Card>
               <Statistic
                 title="Total Orders"
-                value={restaurantCounts.total_orders}
+                value={restaurantCounts?.total_orders || 0}
                 prefix={<UserOutlined />}
                 valueStyle={{ color: '#722ed1' }}
               />
@@ -326,7 +242,7 @@ const Dashboard = ({}) => {
             <Card>
               <Statistic
                 title="Available Tables"
-                value={restaurantCounts.available_tables}
+                value={restaurantCounts?.available_tables || 0}
                 prefix={<HomeOutlined />}
                 valueStyle={{ color: '#1890ff' }}
               />
@@ -336,7 +252,7 @@ const Dashboard = ({}) => {
             <Card>
               <Statistic
                 title="Restaurant Revenue"
-                value={restaurantCounts.revenue}
+                value={restaurantCounts?.revenue || 0}
                 prefix="₹"
                 valueStyle={{ color: '#faad14' }}
               />
