@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { message, Select } from 'antd';
 import { getAllOrg as fetchAllStores } from '../../utility/services/stores';
-import { currentStoreId } from '../../globalStore/index';
+import { currentStoreId, currentStoreData } from '../../globalStore/index';
 
 const Users = () => {
   const [searchValue, setSearchValue] = useState('');
   const [statusChange, setStatusChange] = useAtom(currentStoreId);
+  const [storeData, setStoreData] = useAtom(currentStoreData);
   const [allRoles, setAllRoles] = useState([]);
   const [defaultVal, setDefaultVal] = useState(null);
 
@@ -19,6 +20,7 @@ const Users = () => {
           if (index === 0) {
             setDefaultVal(obj.id); // Set the default value to the first item
             setStatusChange(obj.id);
+            setStoreData(obj);
           }
           dd.push({
             value: obj.id,

@@ -4,14 +4,23 @@ import { MinusCircleOutlined } from '@ant-design/icons';
 import { addCms, getSingleCms, updateCms } from '../../utility/services/orders';
 import { getAllCms } from '../../utility/services/restroItems';
 import { getAllTables } from '../../utility/services/tables';
-
+import OrderPDF from '../tables/Invoice';
 const { Option } = Select;
 
 const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStore }) => {
   const [loading, setLoading] = useState(false);
   const [item, setItem] = useState([]);
   const [search, setSearch] = useState('');
+  const [bill, setBill] = useState(false);
   const [tableDropdowns, setTableDropdowns] = useState([]);
+  const [orderDetails, setOrderDetails] = useState({
+    orderNumber: '',
+    tableNumber: '',
+    items: [],
+    subtotal: 0,
+    tax: 0,
+    total: 0,
+  });
 
   const [form] = Form.useForm();
 
@@ -52,6 +61,16 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
       getSingleCms({ id: isEditCms?.cmsId })
         .then((res) => {
           form.setFieldsValue(res?.data);
+          let d = res?.data;
+          let ooo = {
+            orderNumber: d.id,
+            tableNumber: d.table_number,
+            items: d.order_items,
+            subtotal: d.total_price || 0,
+            tax: d.tax_precent || 0,
+            total: d.total_price || 0,
+          };
+          setOrderDetails(ooo);
           setLoading(false);
         })
         .catch((err) => {
@@ -269,6 +288,13 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
               >
                 Cancel
               </Button>
+              <Button
+                onClick={() => {
+                  setBill(!bill);
+                }}
+              >
+                View Bill
+              </Button>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit
               </Button>
@@ -276,6 +302,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
           </Form>
         </div>
       </Spin>
+      <div className="mt-4">{bill && <OrderPDF orderDetails={orderDetails} />}</div>
     </>
   );
 };

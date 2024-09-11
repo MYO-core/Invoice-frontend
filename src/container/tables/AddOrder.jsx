@@ -1,6 +1,7 @@
 import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Spin, Upload, message, Switch } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MinusCircleOutlined } from '@ant-design/icons';
+import OrderPDF from './Invoice';
 import { addCms, getSingleCms, updateCms } from '../../utility/services/orders';
 import { getAllCms } from '../../utility/services/restroItems';
 
@@ -9,9 +10,17 @@ const { Option } = Select;
 const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllCms }) => {
   const [loading, setLoading] = useState(false);
   const [item, setItem] = useState([]);
+  const [bill, setBill] = useState(false);
   const [search, setSearch] = useState('');
   const [deletedItem, setDeletedItem] = useState([]);
-
+  const [orderDetails, setOrderDetails] = useState({
+    orderNumber: '',
+    tableNumber: '',
+    items: [],
+    subtotal: 0,
+    tax: 0,
+    total: 0,
+  });
   const [form] = Form.useForm();
 
   const updateTableStatus = (orderId, status) => {
@@ -76,13 +85,32 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
 
   useEffect(() => {
     setDeletedItem([]);
-  }, []);
+    setBill(false);
+    setOrderDetails({
+      orderNumber: '',
+      tableNumber: '',
+      items: [],
+      subtotal: 0,
+      tax: 0,
+      total: 0,
+    });
+  }, [visible]);
 
   const getOrder = (id) => {
     setLoading(true);
     getSingleCms({ id })
       .then((res) => {
         form.setFieldsValue(res?.data);
+        let d = res?.data;
+        let ooo = {
+          orderNumber: d.id,
+          tableNumber: tableData.table_number,
+          items: d.order_items,
+          subtotal: d.total_price || 0,
+          tax: d.tax_precent || 0,
+          total: d.total_price || 0,
+        };
+        setOrderDetails(ooo);
         setLoading(false);
       })
       .catch((err) => {
@@ -183,6 +211,11 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                     <Option value="paid">Paid</Option>
                     <Option value="canceled">Canceled</Option>
                   </Select>
+                </Form.Item>
+              </Col>
+              <Col xs={12} sm={12} md={12} lg={8}>
+                <Form.Item label="Table Status" name="free_table" valuePropName="checked">
+                  <Switch checkedChildren="Available" unCheckedChildren="Booked" />
                 </Form.Item>
               </Col>
             </Row>
@@ -298,6 +331,13 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
               >
                 Cancel
               </Button>
+              <Button
+                onClick={() => {
+                  setBill(!bill);
+                }}
+              >
+                View Bill
+              </Button>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit
               </Button>
@@ -305,6 +345,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
           </Form>
         </div>
       </Spin>
+      <div className="mt-4">{bill && <OrderPDF orderDetails={orderDetails} />}</div>
     </>
   );
 };
