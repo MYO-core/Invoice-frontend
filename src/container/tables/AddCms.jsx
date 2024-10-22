@@ -79,7 +79,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
             initialValues={{
               tables: [
                 {
-                  status: 'booked', // Default value for status
+                  status: 'available',
                 },
               ],
             }}

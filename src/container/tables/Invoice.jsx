@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAtom } from 'jotai';
-import { Button, Typography, Table, Divider } from 'antd';
+import { Button, Typography, Table, Divider, message } from 'antd';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import printJS from 'print-js';
 import { currentStoreData } from '../../globalStore/index';
 const { Title, Text } = Typography;
 
@@ -11,7 +12,7 @@ const OrderPDF = ({ orderDetails }) => {
   const billRef = useRef(null);
   const [storeData, setStoreData] = useAtom(currentStoreData);
   const currentDateTime = new Date().toLocaleString();
-
+  const [tax, setTax] = useState(Number(orderDetails.tax) * 0.01 * Number(orderDetails.total));
   // PDF generation function for KOT (Kitchen Order Ticket)
   const generateKOT = () => {
     const content = kotRef.current;
@@ -24,14 +25,33 @@ const OrderPDF = ({ orderDetails }) => {
   };
 
   // PDF generation function for the Bill
+  // const generateBill = () => {
+  //   const content = billRef.current;
+  //   html2canvas(content).then((canvas) => {
+  //     const imgData = canvas.toDataURL('image/png');
+  //     const pdf = new jsPDF('p', 'mm', [80, canvas.height * (80 / canvas.width)]);
+  //     pdf.addImage(imgData, 'PNG', 0, 0, 80, canvas.height * (80 / canvas.width));
+  //     pdf.save('order_bill.pdf');
+  //   });
+  // };
   const generateBill = () => {
-    const content = billRef.current;
-    html2canvas(content).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', [80, canvas.height * (80 / canvas.width)]);
-      pdf.addImage(imgData, 'PNG', 0, 0, 80, canvas.height * (80 / canvas.width));
-      pdf.save('order_bill.pdf');
-    });
+    try {
+      const content = billRef.current;
+      html2canvas(content).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', [80, canvas.height * (80 / canvas.width)]);
+        pdf.addImage(imgData, 'PNG', 0, 0, 80, canvas.height * (80 / canvas.width));
+        const pdfOutput = pdf.output('blob');
+        const url = URL.createObjectURL(pdfOutput);
+        printJS({
+          printable: url,
+          type: 'pdf',
+          documentTitle: 'Order Bill',
+        });
+      });
+    } catch (e) {
+      message.warning('Error While Printing Bill');
+    }
   };
 
   // Ant Design Table for order items
@@ -66,19 +86,18 @@ const OrderPDF = ({ orderDetails }) => {
       dataIndex: 'price',
       key: 'price',
       align: 'center',
-      render: (text) => `$${text.toFixed(2)}`,
+      render: (text) => `₹${text.toFixed(2)}`,
     },
     {
       title: 'Total',
       key: 'total',
       align: 'center',
-      render: (record) => `$${(record.quantity * record.price).toFixed(2)}`,
+      render: (record) => `₹${(record.quantity * record.price).toFixed(2)}`,
     },
   ];
 
   return (
     <div>
-      {/* KOT (Kitchen Order Ticket) */}
       <div
         ref={kotRef}
         style={{
@@ -95,8 +114,9 @@ const OrderPDF = ({ orderDetails }) => {
         </Title>
         <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>{storeData.address}</Text>
         <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Phone: {storeData.phoneNumber}</Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Date: {currentDateTime}</Text>
         <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px', marginBottom: '10px' }}>
-          Date: {currentDateTime}
+          GSTIN: {orderDetails?.organisation?.gst}
         </Text>
 
         <Divider dashed />
@@ -130,7 +150,7 @@ const OrderPDF = ({ orderDetails }) => {
       </div>
 
       <Button style={{ marginTop: '20px' }} onClick={generateKOT}>
-        Download KOT PDF
+        Download KOT
       </Button>
 
       {/* Bill */}
@@ -151,8 +171,9 @@ const OrderPDF = ({ orderDetails }) => {
         </Title>
         <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>{storeData.address}</Text>
         <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Phone: {storeData.phoneNumber}</Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Date: {currentDateTime}</Text>
         <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px', marginBottom: '10px' }}>
-          Date: {currentDateTime}
+          GSTIN: {orderDetails?.organisation?.gst}
         </Text>
         <Divider dashed />
 
@@ -180,16 +201,16 @@ const OrderPDF = ({ orderDetails }) => {
         />
 
         {/* Bill Total Summary */}
-        <Text style={{ fontSize: '12px', marginTop: '10px' }}>
-          <strong>Subtotal:</strong> ${orderDetails.subtotal}
+        {/* <Text style={{ fontSize: '12px', marginTop: '10px' }}>
+          <strong>Subtotal:</strong> ₹{orderDetails.subtotal}
+        </Text>
+        <br /> */}
+        <Text style={{ fontSize: '12px' }}>
+          <strong>Tax:</strong> ({orderDetails.tax}%)
         </Text>
         <br />
         <Text style={{ fontSize: '12px' }}>
-          <strong>Tax ({orderDetails.tax}%):</strong> ${orderDetails.tax}
-        </Text>
-        <br />
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Total:</strong> ${orderDetails.total}
+          <strong>Total:</strong> ₹{orderDetails.total}
         </Text>
 
         <Divider dashed />
@@ -200,7 +221,7 @@ const OrderPDF = ({ orderDetails }) => {
       </div>
 
       <Button style={{ marginTop: '20px' }} onClick={generateBill}>
-        Download Bill PDF
+        Download Bill
       </Button>
     </div>
   );

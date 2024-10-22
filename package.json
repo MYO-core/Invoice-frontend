@@ -31,6 +31,7 @@
     "leaflet": "1.9.2",
     "moment": "^2.29.1",
     "peity-react": "0.0.7",
+    "print-js": "^1.6.0",
     "prop-types": "^15.8.1",
     "query-string": "^8.2.0",
     "querystring": "^0.2.1",

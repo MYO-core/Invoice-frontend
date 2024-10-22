@@ -101,7 +101,7 @@ const Cms = () => {
   ];
 
   const getAllData = () => {
-    getAllCms({ start, limit: 10, search: searchValue, status: status, dates })
+    getAllCms({ start, limit: 10, search: searchValue, status: status, dates, currentStore })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
@@ -113,7 +113,7 @@ const Cms = () => {
 
   useEffect(() => {
     getAllData();
-  }, [start, searchValue, status, dates]);
+  }, [start, searchValue, status, dates, currentStore]);
 
   const onSearch = (value) => {
     setSearchValue(value);

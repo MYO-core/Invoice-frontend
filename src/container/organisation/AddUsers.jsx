@@ -225,12 +225,12 @@ const AddOrder = ({ setIsAddUsers, isEditUsers, setIsEditUsers, getAllUsers }) =
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item label="Website" name="website">
+              <Form.Item label="GST" name="gst">
                 <Input />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Logo URL" name="logoUrl">
+              <Form.Item label="Registration" name="registration">
                 <Input />
               </Form.Item>
             </Col>

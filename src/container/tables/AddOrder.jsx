@@ -1,4 +1,18 @@
-import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Spin, Upload, message, Switch } from 'antd';
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Row,
+  Select,
+  Spin,
+  Upload,
+  message,
+  Switch,
+  AutoComplete,
+} from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MinusCircleOutlined } from '@ant-design/icons';
 import OrderPDF from './Invoice';
@@ -74,7 +88,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
     }
   };
   useEffect(() => {
-    getAllCms({})
+    getAllCms({ search })
       .then((data) => {
         setItem(data.data.rows);
       })
@@ -109,6 +123,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
           subtotal: d.total_price || 0,
           tax: d.tax_precent || 0,
           total: d.total_price || 0,
+          organisation: d.Organisation,
         };
         setOrderDetails(ooo);
         setLoading(false);
@@ -235,12 +250,11 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                             label="Item Code"
                             rules={[{ required: true, message: 'Please select the item ID' }]}
                           >
-                            <Select
-                              showSearch
+                            <AutoComplete
                               onSearch={(value) => {
                                 setSearch(value);
                               }}
-                              onChange={(value) => {
+                              onSelect={(value) => {
                                 const selectedItem = item.find((data) => data.id === value);
                                 form.setFieldsValue({
                                   order_items: {
@@ -253,13 +267,11 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                                 });
                                 getAllItems();
                               }}
-                            >
-                              {item.map((data) => (
-                                <Option value={data.id} key={data.id}>
-                                  {data.item_code} - {data.name}
-                                </Option>
-                              ))}
-                            </Select>
+                              options={item.map((data) => ({
+                                value: data.id,
+                                label: `${data.item_code} - ${data.name}`,
+                              }))}
+                            />
                           </Form.Item>
                         </Col>
                         <Col xs={12} sm={12} md={12} lg={6}>
@@ -301,7 +313,6 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                               const itemToBeDeleted = form.getFieldValue('order_items')[name];
                               remove(name);
                               if (tableData.current_order) {
-                                console.log(deletedItem, itemToBeDeleted);
                                 let dd = deletedItem;
                                 dd.push({ ...itemToBeDeleted, deleted: true });
                                 setDeletedItem(dd);
@@ -333,7 +344,11 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
               </Button>
               <Button
                 onClick={() => {
-                  setBill(!bill);
+                  if (orderDetails?.orderNumber > '') {
+                    setBill(!bill);
+                  } else {
+                    message.warning('Please Save the Order');
+                  }
                 }}
               >
                 View Bill

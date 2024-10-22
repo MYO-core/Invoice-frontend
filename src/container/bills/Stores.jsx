@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { message, Select } from 'antd';
-import { getAllOrg as fetchAllStores } from '../../utility/services/stores';
+import { getAllOrg as fetchAllStores, getSingleOrg } from '../../utility/services/stores';
 import { currentStoreId, currentStoreData } from '../../globalStore/index';
 
 const Users = () => {
@@ -34,12 +34,25 @@ const Users = () => {
       });
   };
 
+  const fetchStore = (value) => {
+    getSingleOrg({ id: value })
+      .then((res) => {
+        const data = res?.data;
+        let dd = [];
+        setStoreData(data);
+      })
+      .catch((error) => {
+        message.error('Error fetching room suggestions');
+      });
+  };
+
   useEffect(() => {
     fetchRolesForFilter();
   }, []);
 
   const handleStatusChange = (value) => {
     setStatusChange(value);
+    fetchStore(value);
   };
 
   return (

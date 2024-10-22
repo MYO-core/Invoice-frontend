@@ -69,6 +69,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
             subtotal: d.total_price || 0,
             tax: d.tax_precent || 0,
             total: d.total_price || 0,
+            organisation: d.Organisation,
           };
           setOrderDetails(ooo);
           setLoading(false);
