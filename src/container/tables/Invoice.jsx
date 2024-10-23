@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import printJS from 'print-js';
 import { currentStoreData } from '../../globalStore/index';
+import './invoice.css';
 const { Title, Text } = Typography;
 
 const OrderPDF = ({ orderDetails }) => {
@@ -13,6 +14,7 @@ const OrderPDF = ({ orderDetails }) => {
   const [storeData, setStoreData] = useAtom(currentStoreData);
   const currentDateTime = new Date().toLocaleString();
   const [tax, setTax] = useState(Number(orderDetails.tax) * 0.01 * Number(orderDetails.total));
+  const [subtotal, setSubtotal] = useState(0);
   // PDF generation function for KOT (Kitchen Order Ticket)
   const generateKOT = () => {
     const content = kotRef.current;
@@ -23,7 +25,13 @@ const OrderPDF = ({ orderDetails }) => {
       pdf.save('kot.pdf');
     });
   };
-
+  useEffect(() => {
+    let sum = 0;
+    orderDetails.items.forEach((d) => {
+      sum += d.price * d.quantity;
+    });
+    setSubtotal(sum);
+  }, []);
   // PDF generation function for the Bill
   // const generateBill = () => {
   //   const content = billRef.current;
@@ -86,13 +94,13 @@ const OrderPDF = ({ orderDetails }) => {
       dataIndex: 'price',
       key: 'price',
       align: 'center',
-      render: (text) => `₹${text.toFixed(2)}`,
+      render: (text) => `${text.toFixed(2)}`,
     },
     {
-      title: 'Total',
+      title: 'Amount',
       key: 'total',
       align: 'center',
-      render: (record) => `₹${(record.quantity * record.price).toFixed(2)}`,
+      render: (record) => `${(record.quantity * record.price).toFixed(2)}`,
     },
   ];
 
@@ -109,33 +117,26 @@ const OrderPDF = ({ orderDetails }) => {
           border: '1px solid #000',
         }}
       >
-        <Title level={4} style={{ textAlign: 'center', marginBottom: '5px' }}>
+        <Title level={5} style={{ marginBottom: '5px' }}>
           {storeData.name}
         </Title>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>{storeData.address}</Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px' }}>{storeData.address}</Text>
         <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Phone: {storeData.phoneNumber}</Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Date: {currentDateTime}</Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px', marginBottom: '10px' }}>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginBottom: '10px' }}>
           GSTIN: {orderDetails?.organisation?.gst}
         </Text>
 
-        <Divider dashed />
-
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Order #:</strong> {orderDetails.orderNumber}
-        </Text>
+        <Divider style={{ borderColor: '#000', margin: '0' }} />
+        <Text style={{ textAlign: 'left', fontSize: '12px' }}>Name: {orderDetails.customer_name}</Text>
+        <Divider style={{ borderColor: '#000', margin: '0' }} />
         <br />
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Waiter:</strong> {orderDetails.waiterName || 'N/A'}
-        </Text>
+        <Text style={{ textAlign: 'left', display: 'block', fontSize: '12px' }}>Date: {currentDateTime}</Text>
+        <Text style={{ fontSize: '12px' }}>Bill No: {orderDetails.orderNumber}</Text>
         <br />
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Table #:</strong> {orderDetails.tableNumber}
-        </Text>
+        <Text style={{ fontSize: '12px' }}>Table: {orderDetails.tableNumber}</Text>
 
-        <Divider dashed />
+        <Divider style={{ borderColor: '#000' }} />
 
-        {/* Order Items Table */}
         <Table
           dataSource={orderDetails.items}
           columns={columns}
@@ -144,13 +145,13 @@ const OrderPDF = ({ orderDetails }) => {
           style={{ marginBottom: '10px' }}
         />
 
-        <Divider dashed />
+        <Divider style={{ borderColor: '#000' }} />
 
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px' }}>Thank You!</Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px' }}>Thank You Visit Again</Text>
       </div>
 
       <Button style={{ marginTop: '20px' }} onClick={generateKOT}>
-        Download KOT
+        Print KOT
       </Button>
 
       {/* Bill */}
@@ -166,57 +167,52 @@ const OrderPDF = ({ orderDetails }) => {
           marginTop: '40px',
         }}
       >
-        <Title level={4} style={{ textAlign: 'center', marginBottom: '5px' }}>
+        <Title level={5} style={{ marginBottom: '5px' }}>
           {storeData.name}
         </Title>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>{storeData.address}</Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px' }}>{storeData.address}</Text>
         <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Phone: {storeData.phoneNumber}</Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Date: {currentDateTime}</Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px', marginBottom: '10px' }}>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginBottom: '10px' }}>
           GSTIN: {orderDetails?.organisation?.gst}
         </Text>
-        <Divider dashed />
 
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Order #:</strong> {orderDetails.orderNumber}
-        </Text>
+        <Divider style={{ borderColor: '#000', margin: '0' }} />
+        <Text style={{ textAlign: 'left', fontSize: '12px' }}>Name: {orderDetails.customer_name}</Text>
+        <Divider style={{ borderColor: '#000', margin: '0' }} />
         <br />
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Waiter:</strong> {orderDetails.waiterName || 'N/A'}
-        </Text>
+        <Text style={{ textAlign: 'left', display: 'block', fontSize: '12px' }}>Date: {currentDateTime}</Text>
+        <Text style={{ fontSize: '12px' }}>Bill No: {orderDetails.orderNumber}</Text>
         <br />
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Table #:</strong> {orderDetails.tableNumber}
-        </Text>
+        <Text style={{ fontSize: '12px' }}>Table: {orderDetails.tableNumber}</Text>
 
-        <Divider dashed />
+        <Divider style={{ borderColor: '#000' }} />
 
         {/* Bill Items Table */}
         <Table
           dataSource={orderDetails.items}
           columns={billColumns}
           pagination={false}
+          rowClassName="custom-row"
           size="small"
           style={{ marginBottom: '10px' }}
         />
 
-        {/* Bill Total Summary */}
-        {/* <Text style={{ fontSize: '12px', marginTop: '10px' }}>
-          <strong>Subtotal:</strong> ₹{orderDetails.subtotal}
+        <Text style={{ textAlign: 'right', display: 'block', fontSize: '14px' }}>
+          <strong>Sub Total </strong> {subtotal}
         </Text>
-        <br /> */}
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Tax:</strong> ({orderDetails.tax}%)
+
+        <Text style={{ textAlign: 'right', display: 'block', fontSize: '14px' }}>
+          <strong>gst </strong> {orderDetails.tax}% {tax.toFixed(2)}
         </Text>
+        <Divider style={{ borderColor: '#000', margin: '0' }} />
+        <Text style={{ textAlign: 'right', display: 'block', fontSize: '10px' }}>round off: 0.01</Text>
+        <Text style={{ textAlign: 'right', display: 'block', fontSize: '16px' }}>
+          <strong>Grand Total ₹ {orderDetails.total}</strong>
+        </Text>
+        <Divider style={{ borderColor: '#000', margin: '0' }} />
         <br />
-        <Text style={{ fontSize: '12px' }}>
-          <strong>Total:</strong> ₹{orderDetails.total}
-        </Text>
-
-        <Divider dashed />
-
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginTop: '10px' }}>
-          Thank you for dining with us!
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '14px', marginTop: '10px' }}>
+          Thank You Visit Again...
         </Text>
       </div>
 

@@ -93,7 +93,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
                         <Col xs={24} sm={24} md={24} lg={8}>
                           <Form.Item
                             {...field}
-                            label={`Table Number ${index + 1}`}
+                            label={`Table Number`}
                             name={[field.name, 'table_number']}
                             fieldKey={[field.fieldKey, 'table_number']}
                             rules={[

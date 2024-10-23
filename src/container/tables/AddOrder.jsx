@@ -210,7 +210,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                 </Form.Item>
               </Col>
               <Col xs={12} sm={12} md={12} lg={8}>
-                <Form.Item label="Tax Percent" name="tax_precent" initialValue={0}>
+                <Form.Item label="Gst" name="tax_precent" initialValue={18}>
                   <InputNumber min={0} max={100} precision={2} style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
@@ -269,7 +269,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                               }}
                               options={item.map((data) => ({
                                 value: data.id,
-                                label: `${data.item_code} - ${data.name}`,
+                                label: `${data.name} - ${data.item_code}`,
                               }))}
                             />
                           </Form.Item>
