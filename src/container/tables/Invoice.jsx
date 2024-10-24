@@ -115,25 +115,32 @@ const OrderPDF = ({ orderDetails }) => {
           margin: 'auto',
           fontFamily: 'Arial, sans-serif',
           border: '1px solid #000',
+          color: '#000',
         }}
       >
         <Title level={5} style={{ marginBottom: '5px' }}>
           {storeData.name}
         </Title>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px' }}>{storeData.address}</Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Phone: {storeData.phoneNumber}</Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginBottom: '10px' }}>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', color: '#000' }}>
+          {storeData.address}
+        </Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px', color: '#000' }}>
+          Phone: {storeData.phoneNumber}
+        </Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginBottom: '10px', color: '#000' }}>
           GSTIN: {orderDetails?.organisation?.gst}
         </Text>
 
         <Divider style={{ borderColor: '#000', margin: '0' }} />
-        <Text style={{ textAlign: 'left', fontSize: '12px' }}>Name: {orderDetails.customer_name}</Text>
+        <Text style={{ textAlign: 'left', fontSize: '12px', color: '#000' }}>Name: {orderDetails.customer_name}</Text>
         <Divider style={{ borderColor: '#000', margin: '0' }} />
         <br />
-        <Text style={{ textAlign: 'left', display: 'block', fontSize: '12px' }}>Date: {currentDateTime}</Text>
-        <Text style={{ fontSize: '12px' }}>Bill No: {orderDetails.orderNumber}</Text>
+        <Text style={{ textAlign: 'left', display: 'block', fontSize: '12px', color: '#000' }}>
+          Date: {currentDateTime}
+        </Text>
+        <Text style={{ fontSize: '12px', color: '#000' }}>Bill No: {orderDetails.orderNumber}</Text>
         <br />
-        <Text style={{ fontSize: '12px' }}>Table: {orderDetails.tableNumber}</Text>
+        <Text style={{ fontSize: '12px', color: '#000' }}>Table: {orderDetails.tableNumber}</Text>
 
         <Divider style={{ borderColor: '#000' }} />
 
@@ -142,12 +149,14 @@ const OrderPDF = ({ orderDetails }) => {
           columns={columns}
           pagination={false}
           size="small"
-          style={{ marginBottom: '10px' }}
+          style={{ marginBottom: '10px', color: '#000' }}
         />
 
         <Divider style={{ borderColor: '#000' }} />
 
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px' }}>Thank You Visit Again</Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', color: '#000' }}>
+          Thank You Visit Again
+        </Text>
       </div>
 
       <Button style={{ marginTop: '20px' }} onClick={generateKOT}>
@@ -167,23 +176,39 @@ const OrderPDF = ({ orderDetails }) => {
           marginTop: '40px',
         }}
       >
+        <style>
+          {`
+                    .custom-row {
+                        color: #000 !important; 
+                    }
+                    .custom-row td {
+                        color: #000 !important; 
+                    }
+                `}
+        </style>
         <Title level={5} style={{ marginBottom: '5px' }}>
           {storeData.name}
         </Title>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px' }}>{storeData.address}</Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px' }}>Phone: {storeData.phoneNumber}</Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginBottom: '10px' }}>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', color: '#000' }}>
+          {storeData.address}
+        </Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px', color: '#000' }}>
+          Phone: {storeData.phoneNumber}
+        </Text>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginBottom: '10px', color: '#000' }}>
           GSTIN: {orderDetails?.organisation?.gst}
         </Text>
 
         <Divider style={{ borderColor: '#000', margin: '0' }} />
-        <Text style={{ textAlign: 'left', fontSize: '12px' }}>Name: {orderDetails.customer_name}</Text>
-        <Divider style={{ borderColor: '#000', margin: '0' }} />
+        <Text style={{ textAlign: 'left', fontSize: '12px', color: '#000' }}>Name: {orderDetails.customer_name}</Text>
+        <Divider style={{ borderColor: '#000', margin: '0', color: '#000' }} />
         <br />
-        <Text style={{ textAlign: 'left', display: 'block', fontSize: '12px' }}>Date: {currentDateTime}</Text>
-        <Text style={{ fontSize: '12px' }}>Bill No: {orderDetails.orderNumber}</Text>
+        <Text style={{ textAlign: 'left', display: 'block', fontSize: '12px', color: '#000' }}>
+          Date: {currentDateTime}
+        </Text>
+        <Text style={{ fontSize: '12px', color: '#000' }}>Bill No: {orderDetails.orderNumber}</Text>
         <br />
-        <Text style={{ fontSize: '12px' }}>Table: {orderDetails.tableNumber}</Text>
+        <Text style={{ fontSize: '12px', color: '#000' }}>Table: {orderDetails.tableNumber}</Text>
 
         <Divider style={{ borderColor: '#000' }} />
 
@@ -197,21 +222,21 @@ const OrderPDF = ({ orderDetails }) => {
           style={{ marginBottom: '10px' }}
         />
 
-        <Text style={{ textAlign: 'right', display: 'block', fontSize: '14px' }}>
+        <Text style={{ textAlign: 'right', display: 'block', fontSize: '14px', color: '#000' }}>
           <strong>Sub Total </strong> {subtotal}
         </Text>
 
-        <Text style={{ textAlign: 'right', display: 'block', fontSize: '14px' }}>
+        <Text style={{ textAlign: 'right', display: 'block', fontSize: '14px', color: '#000', marginBottom: '10px' }}>
           <strong>gst </strong> {orderDetails.tax}% {tax.toFixed(2)}
         </Text>
         <Divider style={{ borderColor: '#000', margin: '0' }} />
-        <Text style={{ textAlign: 'right', display: 'block', fontSize: '10px' }}>round off: 0.01</Text>
-        <Text style={{ textAlign: 'right', display: 'block', fontSize: '16px' }}>
+        <Text style={{ textAlign: 'right', display: 'block', fontSize: '10px', color: '#000' }}>round off: 0.01</Text>
+        <Text style={{ textAlign: 'right', display: 'block', fontSize: '16px', color: '#000', marginBottom: '10px' }}>
           <strong>Grand Total ₹ {orderDetails.total}</strong>
         </Text>
         <Divider style={{ borderColor: '#000', margin: '0' }} />
         <br />
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '14px', marginTop: '10px' }}>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '14px', marginTop: '10px', color: '#000' }}>
           Thank You Visit Again...
         </Text>
       </div>

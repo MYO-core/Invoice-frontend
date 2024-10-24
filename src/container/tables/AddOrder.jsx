@@ -210,7 +210,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                 </Form.Item>
               </Col>
               <Col xs={12} sm={12} md={12} lg={8}>
-                <Form.Item label="Gst" name="tax_precent" initialValue={18}>
+                <Form.Item label="Gst" name="tax_precent" initialValue={5}>
                   <InputNumber min={0} max={100} precision={2} style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
