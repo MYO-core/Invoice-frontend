@@ -15,16 +15,6 @@ const OrderPDF = ({ orderDetails }) => {
   const currentDateTime = new Date().toLocaleString();
   const [tax, setTax] = useState(Number(orderDetails.tax) * 0.01 * Number(orderDetails.total));
   const [subtotal, setSubtotal] = useState(0);
-  // PDF generation function for KOT (Kitchen Order Ticket)
-  const generateKOT = () => {
-    const content = kotRef.current;
-    html2canvas(content).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', [80, canvas.height * (80 / canvas.width)]);
-      pdf.addImage(imgData, 'PNG', 0, 0, 80, canvas.height * (80 / canvas.width));
-      pdf.save('kot.pdf');
-    });
-  };
   useEffect(() => {
     let sum = 0;
     orderDetails.items.forEach((d) => {
@@ -32,16 +22,6 @@ const OrderPDF = ({ orderDetails }) => {
     });
     setSubtotal(sum);
   }, []);
-  // PDF generation function for the Bill
-  // const generateBill = () => {
-  //   const content = billRef.current;
-  //   html2canvas(content).then((canvas) => {
-  //     const imgData = canvas.toDataURL('image/png');
-  //     const pdf = new jsPDF('p', 'mm', [80, canvas.height * (80 / canvas.width)]);
-  //     pdf.addImage(imgData, 'PNG', 0, 0, 80, canvas.height * (80 / canvas.width));
-  //     pdf.save('order_bill.pdf');
-  //   });
-  // };
   const generateBill = () => {
     try {
       const content = billRef.current;
@@ -62,7 +42,6 @@ const OrderPDF = ({ orderDetails }) => {
     }
   };
 
-  // Ant Design Table for order items
   const columns = [
     {
       title: 'Item',
@@ -107,64 +86,6 @@ const OrderPDF = ({ orderDetails }) => {
   return (
     <div>
       <div
-        ref={kotRef}
-        style={{
-          padding: '10px',
-          width: '80mm',
-          backgroundColor: '#fff',
-          margin: 'auto',
-          fontFamily: 'Arial, sans-serif',
-          border: '1px solid #000',
-          color: '#000',
-        }}
-      >
-        <Title level={5} style={{ marginBottom: '5px' }}>
-          {storeData.name}
-        </Title>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', color: '#000' }}>
-          {storeData.address}
-        </Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px', color: '#000' }}>
-          Phone: {storeData.phoneNumber}
-        </Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginBottom: '10px', color: '#000' }}>
-          GSTIN: {orderDetails?.organisation?.gst}
-        </Text>
-
-        <Divider style={{ borderColor: '#000', margin: '0' }} />
-        <Text style={{ textAlign: 'left', fontSize: '12px', color: '#000' }}>Name: {orderDetails.customer_name}</Text>
-        <Divider style={{ borderColor: '#000', margin: '0' }} />
-        <br />
-        <Text style={{ textAlign: 'left', display: 'block', fontSize: '12px', color: '#000' }}>
-          Date: {currentDateTime}
-        </Text>
-        <Text style={{ fontSize: '12px', color: '#000' }}>Bill No: {orderDetails.orderNumber}</Text>
-        <br />
-        <Text style={{ fontSize: '12px', color: '#000' }}>Table: {orderDetails.tableNumber}</Text>
-
-        <Divider style={{ borderColor: '#000' }} />
-
-        <Table
-          dataSource={orderDetails.items}
-          columns={columns}
-          pagination={false}
-          size="small"
-          style={{ marginBottom: '10px', color: '#000' }}
-        />
-
-        <Divider style={{ borderColor: '#000' }} />
-
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', color: '#000' }}>
-          Thank You Visit Again
-        </Text>
-      </div>
-
-      <Button style={{ marginTop: '20px' }} onClick={generateKOT}>
-        Print KOT
-      </Button>
-
-      {/* Bill */}
-      <div
         ref={billRef}
         style={{
           padding: '10px',
@@ -189,45 +110,44 @@ const OrderPDF = ({ orderDetails }) => {
         <Title level={5} style={{ marginBottom: '5px' }}>
           {storeData.name}
         </Title>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', color: '#000' }}>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '14px', color: '#000' }}>
           {storeData.address}
         </Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '10px', color: '#000' }}>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '14px', color: '#000' }}>
           Phone: {storeData.phoneNumber}
         </Text>
-        <Text style={{ textAlign: 'center', display: 'block', fontSize: '12px', marginBottom: '10px', color: '#000' }}>
+        <Text style={{ textAlign: 'center', display: 'block', fontSize: '14px', marginBottom: '10px', color: '#000' }}>
           GSTIN: {orderDetails?.organisation?.gst}
         </Text>
 
         <Divider style={{ borderColor: '#000', margin: '0' }} />
-        <Text style={{ textAlign: 'left', fontSize: '12px', color: '#000' }}>Name: {orderDetails.customer_name}</Text>
+        <Text style={{ textAlign: 'left', fontSize: '14px', color: '#000' }}>Name: {orderDetails.customer_name}</Text>
         <Divider style={{ borderColor: '#000', margin: '0', color: '#000' }} />
         <br />
-        <Text style={{ textAlign: 'left', display: 'block', fontSize: '12px', color: '#000' }}>
+        <Text style={{ textAlign: 'left', display: 'block', fontSize: '14px', color: '#000' }}>
           Date: {currentDateTime}
         </Text>
-        <Text style={{ fontSize: '12px', color: '#000' }}>Bill No: {orderDetails.orderNumber}</Text>
+        <Text style={{ fontSize: '14px', color: '#000' }}>Bill No: {orderDetails.orderNumber}</Text>
         <br />
-        <Text style={{ fontSize: '12px', color: '#000' }}>Table: {orderDetails.tableNumber}</Text>
+        <Text style={{ fontSize: '14px', color: '#000' }}>Table: {orderDetails.tableNumber}</Text>
 
         <Divider style={{ borderColor: '#000' }} />
 
-        {/* Bill Items Table */}
         <Table
           dataSource={orderDetails.items}
           columns={billColumns}
           pagination={false}
-          rowClassName="custom-row"
+          rowClassName="custom-row td"
           size="small"
           style={{ marginBottom: '10px' }}
         />
 
         <Text style={{ textAlign: 'right', display: 'block', fontSize: '14px', color: '#000' }}>
-          <strong>Sub Total </strong> {subtotal}
+          Sub Total {subtotal}
         </Text>
 
         <Text style={{ textAlign: 'right', display: 'block', fontSize: '14px', color: '#000', marginBottom: '10px' }}>
-          <strong>gst </strong> {orderDetails.tax}% {tax.toFixed(2)}
+          gst {orderDetails.tax}% {tax.toFixed(2)}
         </Text>
         <Divider style={{ borderColor: '#000', margin: '0' }} />
         <Text style={{ textAlign: 'right', display: 'block', fontSize: '10px', color: '#000' }}>round off: 0.01</Text>

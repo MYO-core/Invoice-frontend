@@ -3,6 +3,7 @@ import { Row, Col, Card, Statistic, Layout, Typography } from 'antd';
 import { Line, Bar } from '@ant-design/charts';
 import { UserOutlined, ShopOutlined, HomeOutlined } from '@ant-design/icons';
 import { getRestrauntStats, getHotelStats } from '../../utility/services/dashboard';
+import { getTodaysTotal } from '../../utility/services/orders';
 
 const { Title } = Typography;
 const { Header, Footer, Content } = Layout;
@@ -10,11 +11,13 @@ const { Header, Footer, Content } = Layout;
 const Dashboard = () => {
   const [restaurantData, setRestaurantData] = useState({});
   const [hotelData, setHotelData] = useState({});
+  const [total, setTotal] = useState({});
 
   useEffect(() => {
     getRestrauntStats()
       .then((d) => {
         setRestaurantData(d.data);
+        setTotal(d.data?.total);
       })
       .catch((e) => {
         console.log(e);
@@ -220,12 +223,7 @@ const Dashboard = () => {
         <Row gutter={16} style={{ marginTop: 16 }}>
           <Col xs={24} sm={12} lg={6}>
             <Card>
-              <Statistic
-                title="Restaurant Items"
-                value={restaurantCounts?.item_count || 0}
-                prefix={<ShopOutlined />}
-                valueStyle={{ color: '#52c41a' }}
-              />
+              <Statistic title="Todays Sales" value={total?.total || 0} prefix="₹" valueStyle={{ color: '#faad14' }} />
             </Card>
           </Col>
           <Col xs={24} sm={12} lg={6}>

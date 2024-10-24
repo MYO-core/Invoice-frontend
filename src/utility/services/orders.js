@@ -23,6 +23,10 @@ const getSingleCms = async ({ id }) => {
   const response = await callApi.get(`/orders/${id}`);
   return response;
 };
+const getTodaysTotal = async () => {
+  const response = await callApi.get(`/orders/today-total`);
+  return response;
+};
 
 const updateCms = async ({ id, body }) => {
   const response = await callApi.patch(`/orders/${id}`, body);
@@ -34,4 +38,4 @@ const deleteCms = async ({ id }) => {
   return response;
 };
 
-export { addCms, getAllCms, getSingleCms, updateCms, deleteCms };
+export { addCms, getAllCms, getSingleCms, updateCms, deleteCms, getTodaysTotal };
