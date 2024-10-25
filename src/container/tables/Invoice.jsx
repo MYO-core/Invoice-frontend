@@ -23,12 +23,31 @@ const OrderPDF = ({ orderDetails }) => {
     setSubtotal(sum);
   }, []);
   const generateBill = () => {
-    try {
-      const content = billRef.current;
-      html2canvas(content).then((canvas) => {
+    const content = billRef.current;
+    html2canvas(content, { scale: 2 })
+      .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', [80, canvas.height * (80 / canvas.width)]);
-        pdf.addImage(imgData, 'PNG', 0, 0, 80, canvas.height * (80 / canvas.width));
+        const pdf = new jsPDF('p', 'mm', 'a4'); // A4 page size
+        const imgWidth = pdf.internal.pageSize.width; // Full width of the PDF
+        const pageHeight = pdf.internal.pageSize.height;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Height based on aspect ratio
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // Add the first image
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Check if additional pages are needed
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        // Output the PDF
         const pdfOutput = pdf.output('blob');
         const url = URL.createObjectURL(pdfOutput);
         printJS({
@@ -36,10 +55,10 @@ const OrderPDF = ({ orderDetails }) => {
           type: 'pdf',
           documentTitle: 'Order Bill',
         });
+      })
+      .catch(() => {
+        message.warning('Error While Printing Bill');
       });
-    } catch (e) {
-      message.warning('Error While Printing Bill');
-    }
   };
 
   const columns = [
@@ -121,7 +140,9 @@ const OrderPDF = ({ orderDetails }) => {
         </Text>
 
         <Divider style={{ borderColor: '#000', margin: '0' }} />
-        <Text style={{ textAlign: 'left', fontSize: '14px', color: '#000' }}>Name: {orderDetails.customer_name}</Text>
+        <Text style={{ textAlign: 'left', fontSize: '14px', color: '#000', marginBottom: '10px' }}>
+          Name: {orderDetails.customer_name}
+        </Text>
         <Divider style={{ borderColor: '#000', margin: '0', color: '#000' }} />
         <br />
         <Text style={{ textAlign: 'left', display: 'block', fontSize: '14px', color: '#000' }}>
