@@ -12,44 +12,33 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
         {allData.map((room) => (
           <Col key={room.id} xs={24} sm={12} md={8} lg={6}>
             <Card
-              title={
-                <Title level={5}>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm sm:text-base">Table No:- {room.table_number}</span>
-                    <span
-                      className="ml-5 sm:ml-16 "
-                      onClick={() => {
-                        setVisible(true);
-                        setTableData(room);
-                      }}
-                    >
-                      {room.current_order ? (
-                        <Tag color="blue">
-                          <EyeOutlined className="mr-1" />
-                          view Order
-                        </Tag>
-                      ) : (
-                        <Tag color="green">
-                          <PlusOutlined className="mr-1" />
-                          Add Order
-                        </Tag>
-                      )}
-                    </span>
-                  </div>
-                </Title>
-              }
-              bordered={false}
+              bordered={true}
               style={{
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                borderRadius: '8px',
+                border: '1px solid #a158e0',
               }}
             >
-              <Text strong>#ID: </Text>
-              <Text>{room.id}</Text>
-              <br />
-              <Text strong>Total Seats: </Text>
-              <Text>{room.no_of_seats}</Text>
-              <br />
+              <div className="flex justify-between items-center">
+                <Text strong>Table: {room.table_number}</Text>
+                <span
+                  className="ml-5 sm:ml-16 "
+                  onClick={() => {
+                    setVisible(true);
+                    setTableData(room);
+                  }}
+                >
+                  {room.current_order ? (
+                    <Tag color="blue">
+                      <EyeOutlined className="mr-1" />
+                      view Order
+                    </Tag>
+                  ) : (
+                    <Tag color="green">
+                      <PlusOutlined className="mr-1" />
+                      Add Order
+                    </Tag>
+                  )}
+                </span>
+              </div>
               <Text strong>Status: </Text>
               {room.status === 'available' ? (
                 <Tag color="green">{room.status}</Tag>
@@ -59,13 +48,13 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
               <br />
               {room.current_order && (
                 <>
-                  <Text strong>Current Order: </Text>
+                  <Text>Current Order: </Text>
                   {'#' + room.current_order}
                 </>
               )}
               {!room.current_order && (
                 <>
-                  <Text strong>Waiting For Orders</Text>
+                  <Text>Ready For Orders</Text>
                 </>
               )}
               <div className="flex justify-between mt-2">
@@ -73,22 +62,6 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
                   onClick={() => setIsEditCms({ isOpen: true, cmsId: room?.id })}
                   style={{ cursor: 'pointer', color: '#1890ff' }}
                 />
-                <Popconfirm
-                  title="Are you sure to delete this Table?"
-                  onConfirm={() => {
-                    // deleteCms({ id: room?.id })
-                    //   .then((res) => {
-                    //     console.log('res', res);
-                    //     message.success('Deleted Successfully');
-                    //     // getAllData();
-                    //   })
-                    //   .catch((err) => console.log('err', err));
-                  }}
-                  okText="Yes"
-                  cancelText="No"
-                >
-                  <DeleteFilled onClick={() => {}} style={{ cursor: 'pointer', color: '#ff4d4f' }} />
-                </Popconfirm>
               </div>
             </Card>
           </Col>

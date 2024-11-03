@@ -1,6 +1,6 @@
-import { Button, Col, Form, Input, InputNumber, Row, Select, Spin, message } from 'antd';
+import { Button, Col, Form, Input, InputNumber, Row, Select, Spin, message, Popconfirm } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DeleteFilled } from '@ant-design/icons';
 
 import { addCms, getSingleCms, updateCms } from '../../utility/services/tables';
 
@@ -174,9 +174,27 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
               <Button onClick={() => setisAddCms(false)} style={{ marginRight: 8 }}>
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
                 Submit
               </Button>
+              <Popconfirm
+                title="Are you sure to delete this Table?"
+                onConfirm={() => {
+                  // deleteCms({ id: room?.id })
+                  //   .then((res) => {
+                  //     console.log('res', res);
+                  //     message.success('Deleted Successfully');
+                  //     // getAllData();
+                  //   })
+                  //   .catch((err) => console.log('err', err));
+                }}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button type="danger" onClick={() => {}}>
+                  Delete
+                </Button>
+              </Popconfirm>
             </Form.Item>
           </Form>
         </div>

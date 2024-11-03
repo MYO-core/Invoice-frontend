@@ -270,19 +270,6 @@ const Dashboard = () => {
             </Card>
           </Col>
         </Row>
-
-        <Row gutter={16} style={{ marginTop: 16 }}>
-          <Col xs={24} lg={12}>
-            <Card title="Most Booked Rooms (Hotel)">
-              <Bar {...hotelRoomsConfig} />
-            </Card>
-          </Col>
-          <Col xs={24} lg={12}>
-            <Card title="Top 5 Products (Restaurant)">
-              <Bar {...topProductsConfig} />
-            </Card>
-          </Col>
-        </Row>
       </Content>
     </Layout>
   );
