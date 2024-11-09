@@ -15,10 +15,12 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MinusCircleOutlined } from '@ant-design/icons';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import OrderPDF from './Invoice';
 import { addCms, getSingleCms, updateCms } from '../../utility/services/orders';
 import { getAllCms } from '../../utility/services/restroItems';
-
+import { generateHtml } from '../../utility/services/generateInvoice';
 const { Option } = Select;
 
 const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllCms }) => {
@@ -37,6 +39,20 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
   });
   const [form] = Form.useForm();
 
+  const freeTable = () => {
+    updateCms({
+      id: tableData.current_order,
+      body: { free_table: true, table_id: tableData.id.toString() },
+    })
+      .then((res) => {
+        updateTableStatus(null, 'available');
+        message.success('Table status updated.');
+      })
+      .catch((err) => {
+        message.error('Something Went Wrong');
+        console.log('err :>> ', err);
+      });
+  };
   const updateTableStatus = (orderId, status) => {
     let dd = allCms.map((d) => {
       if (d.id === tableData.id) {
@@ -47,6 +63,38 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       return d;
     });
     setAllCms(dd);
+  };
+  const generatePdf = async () => {
+    try {
+      setLoading(true);
+      await getOrder(tableData.current_order);
+      const string = await generateHtml(orderDetails);
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.visibility = 'hidden';
+      document.body.appendChild(tempDiv);
+      tempDiv.innerHTML = string;
+      html2canvas(tempDiv).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', [80, canvas.height * (80 / canvas.width)]);
+        pdf.addImage(imgData, 'PNG', 0, 0, 80, canvas.height * (80 / canvas.width));
+        const pdfOutput = pdf.output('blob');
+        const url = URL.createObjectURL(pdfOutput);
+
+        printJS({
+          printable: url,
+          type: 'pdf',
+          documentTitle: 'Order Bill',
+        });
+
+        document.body.removeChild(tempDiv);
+      });
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      message.warning('Something went wrong.');
+      console.log(e);
+    }
   };
   const onFinish = (values) => {
     const body = values;
@@ -110,7 +158,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
     });
   }, [visible]);
 
-  const getOrder = (id) => {
+  const getOrder = async (id) => {
     setLoading(true);
     getSingleCms({ id })
       .then((res) => {
@@ -118,12 +166,15 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
         let d = res?.data;
         let ooo = {
           orderNumber: d.id,
+          customer_name: d.customer_name,
           tableNumber: tableData.table_number,
           items: d.order_items,
           subtotal: d.total_price || 0,
           tax: d.tax_precent || 0,
           total: d.total_price || 0,
           organisation: d.Organisation,
+          store: d.Store,
+          user: d.User,
         };
         setOrderDetails(ooo);
         setLoading(false);
@@ -336,25 +387,21 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
 
             <div className="flex justify-end gap-2 mt-5">
               <Button
+                htmlType="button"
                 onClick={() => {
                   setVisible(false);
                 }}
               >
                 Cancel
               </Button>
-              <Button
-                onClick={() => {
-                  if (orderDetails?.orderNumber > '') {
-                    setBill(!bill);
-                  } else {
-                    message.warning('Please Save the Order');
-                  }
-                }}
-              >
-                View Bill
+              <Button onClick={generatePdf} htmlType="button">
+                Print
               </Button>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit
+              </Button>
+              <Button onClick={freeTable} type="ghost" htmlType="button" loading={loading}>
+                Free Table
               </Button>
             </div>
           </Form>

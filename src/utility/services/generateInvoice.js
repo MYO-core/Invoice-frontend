@@ -1,16 +1,28 @@
-const generateHtml = (data) => {
-    // Extract order details from data
-    const orderDetails = data.orderDetails;
-    const storeData = data.storeData;
-    
-    // Calculate necessary values
-    let subtotal = 0;
-    let itemsRows = '';
-
-    orderDetails.items.forEach(item => {
-        const amount = item.quantity * item.price;
-        subtotal += amount;
-        itemsRows += `
+const generateHtml = (dd) => {
+  const data = {
+    orderDetails: {
+      items: dd.items,
+      tax: dd.tax,
+      total: dd?.total,
+    },
+    storeData: dd?.store,
+    customerName: dd?.customer_name,
+    orderNumber: dd?.orderNumber,
+    cashier: dd?.user.name,
+    tableNumber: dd?.tableNumber,
+  };
+  // Extract order details from data
+  const orderDetails = data.orderDetails;
+  const storeData = data.storeData;
+  const gstNumber = dd?.organisation?.gst;
+  let subtotal = 0;
+  let itemsRows = '';
+  let quantity = 0;
+  orderDetails.items.forEach((item) => {
+    const amount = item.quantity * item.price;
+    subtotal += amount;
+    quantity += item.quantity;
+    itemsRows += `
             <tr class="bill-details">
                 <td>${item.item_name}</td>
                 <td>${item.quantity}</td>
@@ -18,14 +30,24 @@ const generateHtml = (data) => {
                 <td>₹${amount.toFixed(2)}</td>
             </tr>
         `;
+  });
+
+  const gstAmount = (subtotal * orderDetails.tax) / 100;
+  const gstPercent = (orderDetails.tax / 2).toFixed(1);
+  const grandTotal = subtotal + gstAmount;
+  const sgst = gstAmount / 2;
+  const getTime = () => {
+    const currentDateTime = new Date();
+    const date = currentDateTime.toLocaleDateString('en-US');
+    const time = currentDateTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
     });
+    return `${date} (${time})`;
+  };
 
-    const gstAmount = (subtotal * orderDetails.tax) / 100;
-    const roundOff = 0.01; // Example round off value
-    const grandTotal = subtotal + gstAmount + roundOff;
-
-    // Now, construct the final HTML string
-    return `
+  return `
     
     <head>
     <style>
@@ -35,6 +57,9 @@ const generateHtml = (data) => {
             padding: 0;
             background-color: #f4f4f4;
         }
+             hr {
+    border: 1px solid black;
+  }
         td{
           word-wrap: break-word;
           white-space: normal;
@@ -84,12 +109,11 @@ const generateHtml = (data) => {
             text-align: center;
         }
         .table-container th {
-            background-color: #f4f4f4;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 14px;
         }
         .table-container td {
-            font-size: 12px;
+            font-size: 14px;
         }
         .total {
             text-align: right;
@@ -120,22 +144,22 @@ const generateHtml = (data) => {
                 <div class="store-name thora-khisakle">${storeData.name}</div>
                 <div class="store-address thora-khisakle address-khisak">${storeData.address}</div>
                 <div class="store-phone thora-khisakle">Phone: ${storeData.phoneNumber}</div>
-                <div class="gst thora-khisakle">GSTIN: ${storeData.gst}</div>
+                <div class="gst thora-khisakle">GSTIN: ${gstNumber}</div>
             </div>
 
-            <div class="divider"></div>
+            <hr>
 
             <div class="bill-details">
                 <div class="thora-khisakle">Name: ${data.customerName}</div>
             </div>
 
-            <div class="divider"></div>
+            <hr>
 
             <table style="width: 100%; border-collapse: collapse;">
                 <tr class="bill-details">
                     <td>Date:</td>
-                    <td class="bill-details">${new Date().toLocaleString()}</td>
-                    <td><strong>Bill No:</strong></td>
+                    <td class="bill-details">${getTime()}</td>
+                    <td>Bill No:</td>
                     <td>${data.orderNumber}</td>
                 </tr>
                 <tr class="bill-details">
@@ -146,7 +170,7 @@ const generateHtml = (data) => {
                 </tr>
             </table>
 
-            <div class="divider"></div>
+            <hr>
 
             <table class="table-container">
                 <thead>
@@ -162,58 +186,33 @@ const generateHtml = (data) => {
                 </tbody>
             </table>
 
-            <div class="divider"></div>
+            <hr>
 
             <div class="total">
+               
+            </div>
+            <div class="total" >
+            	<span style="margin-right:10px;">Total Qty: ${quantity} </span>
                 Sub Total: ₹${subtotal.toFixed(2)}
             </div>
             <div class="total">
-                GST (5%): ₹${gstAmount.toFixed(2)}
+                sgst (${gstPercent}%): ₹${sgst.toFixed(2)}
             </div>
-            <div class="divider"></div>
             <div class="total">
-                Round Off: ₹${roundOff.toFixed(2)}
+                cgst (${gstPercent}%): ₹${sgst.toFixed(2)}
             </div>
+            <hr>
             <div class="total grand-total">
                 Grand Total: ₹${grandTotal.toFixed(2)}
             </div>
 
-            <div class="divider"></div>
+            <hr>
 
             <div class="bill-footer">
                 Thank You! Visit Again...
             </div>
         </div>
-
-        <button onclick="generateBill()">Download Bill</button>
     </body>
     `;
 };
-
-// Example data
-const data = {
-    orderDetails: {
-        items: [
-            { item_name: "Mutton Handi 250g with paramsda", quantity: 2, price: 150 },
-            { item_name: "Fries", quantity: 1, price: 100 },
-            { item_name: "Coke", quantity: 3, price: 50 }
-        ],
-        tax: 5, // GST in percentage
-        total: 650.01
-    },
-    storeData: {
-        name: "East Champaran Meat House",
-        address: "Har Har mahasddsdd sdsddev vhauk 123 Main Street, City, Country",
-        phoneNumber: "+1234567890",
-        gst: "ABCDE1234F"
-    },
-    customerName: "Ram Vilas Paswan",
-    orderNumber: "123456",
-    cashier: "Prince",
-    tableNumber: 123456
-};
-
-// Generate HTML and log to console
-const htmlContent = generateHtml(data);
-
-return htmlContent
+export { generateHtml };
