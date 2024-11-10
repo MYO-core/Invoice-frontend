@@ -71,7 +71,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       const string = await generateHtml(orderDetails);
       const tempDiv = document.createElement('div');
       tempDiv.style.position = 'absolute';
-      tempDiv.style.visibility = 'hidden';
+      // tempDiv.style.visibility = 'hidden';
       document.body.appendChild(tempDiv);
       tempDiv.innerHTML = string;
       html2canvas(tempDiv).then((canvas) => {

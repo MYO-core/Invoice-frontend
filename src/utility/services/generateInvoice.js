@@ -6,7 +6,7 @@ const generateHtml = (dd) => {
       total: dd?.total,
     },
     storeData: dd?.store,
-    customerName: dd?.customer_name,
+    customerName: dd?.customer_name || '',
     orderNumber: dd?.orderNumber,
     cashier: dd?.user.name,
     tableNumber: dd?.tableNumber,
