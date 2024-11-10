@@ -9,7 +9,7 @@ const generateHtml = (dd) => {
     customerName: dd?.customer_name || '',
     orderNumber: dd?.orderNumber,
     cashier: dd?.user.name,
-    tableNumber: dd?.tableNumber,
+    tableNumber: dd?.tableNumber || '',
   };
   // Extract order details from data
   const orderDetails = data.orderDetails;

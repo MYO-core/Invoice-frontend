@@ -1,10 +1,13 @@
 import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Spin, Upload, message, Switch } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MinusCircleOutlined } from '@ant-design/icons';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { addCms, getSingleCms, updateCms } from '../../utility/services/orders';
 import { getAllCms } from '../../utility/services/restroItems';
 import { getAllTables } from '../../utility/services/tables';
 import OrderPDF from '../tables/Invoice';
+import { generateHtml } from '../../utility/services/generateInvoice';
 const { Option } = Select;
 
 const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStore }) => {
@@ -26,6 +29,7 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
 
   const onFinish = (values) => {
     const body = values;
+    body.table_id = body?.table_id.toString();
 
     if (isEditCms?.cmsId) {
       updateCms({
@@ -64,17 +68,21 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
           let d = res?.data;
           let ooo = {
             orderNumber: d.id,
+            customer_name: d.customer_name,
             tableNumber: d.table_number,
             items: d.order_items,
             subtotal: d.total_price || 0,
             tax: d.tax_precent || 0,
             total: d.total_price || 0,
             organisation: d.Organisation,
+            store: d.Store,
+            user: d.User,
           };
           setOrderDetails(ooo);
           setLoading(false);
         })
         .catch((err) => {
+          message.error(err?.data?.message || 'Something Went Wrong');
           console.log('err', err);
           setLoading(false);
         });
@@ -113,6 +121,74 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
     let dp = 0.01 * discount * total;
     total -= dp;
     form.setFieldValue('total_price', total);
+  };
+  const generatePdf = async () => {
+    try {
+      setLoading(true);
+      await getOrder(isEditCms?.cmsId);
+      const string = await generateHtml(orderDetails);
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      // tempDiv.style.visibility = 'hidden';
+      document.body.appendChild(tempDiv);
+      tempDiv.innerHTML = string;
+      html2canvas(tempDiv).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+
+        const receiptWidth = 80;
+        const scaleFactor = receiptWidth / imgWidth;
+
+        const scaledImgHeight = imgHeight * scaleFactor;
+
+        const pdf = new jsPDF('p', 'mm', [receiptWidth, scaledImgHeight]);
+
+        pdf.addImage(imgData, 'PNG', 0, 0, receiptWidth, scaledImgHeight);
+
+        const pdfOutput = pdf.output('blob');
+        const url = URL.createObjectURL(pdfOutput);
+
+        const printWindow = window.open(url, '_blank');
+        printWindow.onload = function () {
+          printWindow.print();
+        };
+
+        document.body.removeChild(tempDiv);
+      });
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      message.warning('Something went wrong.');
+      console.log(e);
+    }
+  };
+  const getOrder = async (id) => {
+    setLoading(true);
+    getSingleCms({ id })
+      .then((res) => {
+        form.setFieldsValue(res?.data);
+        let d = res?.data;
+        let ooo = {
+          orderNumber: d.id,
+          customer_name: d.customer_name,
+          tableNumber: d.table_id,
+          items: d.order_items,
+          subtotal: d.total_price || 0,
+          tax: d.tax_precent || 0,
+          total: d.total_price || 0,
+          organisation: d.Organisation,
+          store: d.Store,
+          user: d.User,
+        };
+        setOrderDetails(ooo);
+        setLoading(false);
+      })
+      .catch((err) => {
+        message.error(err?.data?.message || 'Something Went Wrong');
+        console.log('err', err);
+        setLoading(false);
+      });
   };
   return (
     <>
@@ -283,22 +359,22 @@ const AddRoom = ({ setisAddCms, getAllData, setIsEditCms, isEditCms, currentStor
 
             <div className="flex justify-end gap-2 mt-5">
               <Button
+                htmlType="button"
                 onClick={() => {
-                  setisAddCms(false);
+                  setVisible(false);
                 }}
               >
                 Cancel
               </Button>
-              <Button
-                onClick={() => {
-                  setBill(!bill);
-                }}
-              >
-                View Bill
+              <Button onClick={generatePdf} htmlType="button">
+                Print
               </Button>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit
               </Button>
+              {/* <Button onClick={freeTable} type="ghost" htmlType="button" loading={loading}>
+                Free Table
+              </Button> */}
             </div>
           </Form>
         </div>
