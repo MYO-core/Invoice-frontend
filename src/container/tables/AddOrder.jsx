@@ -71,55 +71,37 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       const string = await generateHtml(orderDetails);
       const tempDiv = document.createElement('div');
       tempDiv.style.position = 'absolute';
+      // tempDiv.style.visibility = 'hidden';
       document.body.appendChild(tempDiv);
       tempDiv.innerHTML = string;
-
       html2canvas(tempDiv).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
 
-        const imgWidth = 80; // Fixed width of the image in mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio based on fixed width
+        const imgWidth = 80;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        const pdf = new jsPDF('p', 'mm', 'a4'); // Create PDF (A4 size)
+        const pdf = new jsPDF('p', 'mm', [imgWidth, imgHeight]);
 
-        const pageHeight = 297; // Height of the A4 page in mm
-        let currentY = 0; // Current Y position where the content will be placed on the page
+        // Add the image (canvas) to the PDF
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
 
-        // Add the first image to the first page
-        pdf.addImage(imgData, 'PNG', 0, currentY, imgWidth, imgHeight);
-
-        // If the image height exceeds one page, add additional pages
-        // Start with the initial Y position of the next page
-        currentY += imgHeight;
-
-        while (currentY < imgHeight) {
-          // Add a new page if the current Y exceeds the page height
-          if (currentY + imgHeight > pageHeight) {
-            pdf.addPage(); // Add a new page
-            currentY = 0; // Reset Y position for the next page
-          }
-
-          // Add the image to the new page, starting from the top
-          pdf.addImage(imgData, 'PNG', 0, currentY, imgWidth, imgHeight);
-
-          // Update the Y position for the next image
-          currentY += imgHeight;
-        }
-
-        // Output the PDF as a blob and create a URL for it
         const pdfOutput = pdf.output('blob');
         const url = URL.createObjectURL(pdfOutput);
 
-        // Open the generated PDF in a new window for printing
+        // Print using printJS
+        // printJS({
+        //   printable: url,
+        //   type: 'pdf',
+        //   documentTitle: 'Order Bill',
+        // });
         const printWindow = window.open(url, '_blank');
-        printWindow.onload = function () {
-          printWindow.print(); // Automatically trigger print when the PDF is ready
-        };
 
-        // Clean up by removing the temporary div from the DOM
+        // Try to invoke print after the window has loaded
+        printWindow.onload = function () {
+          printWindow.print();
+        };
         document.body.removeChild(tempDiv);
       });
-
       setLoading(false);
     } catch (e) {
       setLoading(false);
