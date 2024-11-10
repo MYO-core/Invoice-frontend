@@ -76,11 +76,19 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       tempDiv.innerHTML = string;
       html2canvas(tempDiv).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', [80, canvas.height * (80 / canvas.width)]);
-        pdf.addImage(imgData, 'PNG', 0, 0, 80, canvas.height * (80 / canvas.width));
+
+        const imgWidth = 80;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        const pdf = new jsPDF('p', 'mm', [imgWidth, imgHeight]);
+
+        // Add the image (canvas) to the PDF
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
         const pdfOutput = pdf.output('blob');
         const url = URL.createObjectURL(pdfOutput);
 
+        // Print using printJS
         printJS({
           printable: url,
           type: 'pdf',
