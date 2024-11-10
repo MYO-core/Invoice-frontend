@@ -76,7 +76,7 @@ const generateHtml = (dd) => {
         }
         .bill-container {
             width: 80mm;
-            margin: 40px auto;
+            // margin: 40px auto;
             padding: 10px;
             background-color: #fff;
             border: 1px solid #000;
@@ -86,6 +86,7 @@ const generateHtml = (dd) => {
             text-align: center;
             font-size: 14px;
             color: #000;
+             margin-bottom: 10px;
         }
         .bill-header .store-name {
             font-size: 18px;
@@ -152,10 +153,9 @@ const generateHtml = (dd) => {
             <div class="bill-details">
                 <div class="thora-khisakle">Name: ${data.customerName}</div>
             </div>
-
             <hr>
 
-            <table style="width: 100%; border-collapse: collapse;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
                 <tr class="bill-details">
                     <td>Date:</td>
                     <td class="bill-details">${getTime()}</td>
@@ -171,26 +171,23 @@ const generateHtml = (dd) => {
             </table>
 
             <hr>
-
-            <table class="table-container">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Qty</th>
-                        <th>Price</th>
-                        <th>Amount</th>
+                 <table class="table-container">
+                    <tr class="bill-details">
+                        <td>Item</td>
+                        <td>Qty</td>
+                        <td>Price</td>
+                        <td>Amount</td>
                     </tr>
-                </thead>
+                    </table>
+                    <hr>
+            
+            <table class="table-container">
                 <tbody id="items-list">
                     ${itemsRows}
                 </tbody>
             </table>
 
             <hr>
-
-            <div class="total">
-               
-            </div>
             <div class="total" >
             	<span style="margin-right:10px;">Total Qty: ${quantity} </span>
                 Sub Total: ₹${subtotal.toFixed(2)}
