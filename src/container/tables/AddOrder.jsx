@@ -89,17 +89,17 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
         const url = URL.createObjectURL(pdfOutput);
 
         // Print using printJS
-        // printJS({
-        //   printable: url,
-        //   type: 'pdf',
-        //   documentTitle: 'Order Bill',
-        // });
-        const printWindow = window.open(url, '_blank');
+        printJS({
+          printable: url,
+          type: 'pdf',
+          documentTitle: 'Order Bill',
+        });
+        // const printWindow = window.open(url, '_blank');
 
         // Try to invoke print after the window has loaded
-        printWindow.onload = function () {
-          printWindow.print();
-        };
+        // printWindow.onload = function () {
+        //   printWindow.print();
+        // };
         document.body.removeChild(tempDiv);
       });
       setLoading(false);
