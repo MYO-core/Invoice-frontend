@@ -20,7 +20,7 @@ import html2canvas from 'html2canvas';
 import OrderPDF from './Invoice';
 import { addCms, getSingleCms, updateCms } from '../../utility/services/orders';
 import { getAllCms } from '../../utility/services/restroItems';
-import { generateHtml } from '../../utility/services/generateInvoice';
+import { generateHtml, generateKot } from '../../utility/services/generateInvoice';
 const { Option } = Select;
 
 const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllCms }) => {
@@ -69,6 +69,52 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       setLoading(true);
       await getOrder(tableData.current_order);
       const string = await generateHtml(orderDetails);
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      // tempDiv.style.visibility = 'hidden';
+      document.body.appendChild(tempDiv);
+      tempDiv.innerHTML = string;
+      html2canvas(tempDiv).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+
+        const imgWidth = 80;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        const pdf = new jsPDF('p', 'mm', [imgWidth, imgHeight]);
+
+        // Add the image (canvas) to the PDF
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+        const pdfOutput = pdf.output('blob');
+        const url = URL.createObjectURL(pdfOutput);
+
+        // Print using printJS
+        printJS({
+          printable: url,
+          type: 'pdf',
+          documentTitle: 'Order Bill',
+        });
+        // const printWindow = window.open(url, '_blank');
+
+        // Try to invoke print after the window has loaded
+        // printWindow.onload = function () {
+        //   printWindow.print();
+        // };
+        document.body.removeChild(tempDiv);
+      });
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      message.warning('Something went wrong.');
+      console.log(e);
+    }
+  };
+  const generateKotPdf = async () => {
+    try {
+      setLoading(true);
+      await getOrder(tableData.current_order);
+      const string = await generateKot(orderDetails);
+      console.log('==', string);
       const tempDiv = document.createElement('div');
       tempDiv.style.position = 'absolute';
       // tempDiv.style.visibility = 'hidden';
@@ -409,6 +455,9 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
               </Button>
               <Button onClick={generatePdf} htmlType="button">
                 Print
+              </Button>
+              <Button onClick={generateKotPdf} htmlType="button">
+                Print Kot
               </Button>
               <Button type="primary" htmlType="submit" loading={loading}>
                 Submit
