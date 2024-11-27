@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/471.6cc2a30b.chunk.css","mappings":"AAAA,YACI,WACJ,CAEA,eACI,WAAc","sources":["container/tables/invoice.css"],"sourcesContent":[".custom-row {\n    height: 20px; \n}\n\n.custom-row td {\n    padding: 2px; }"],"names":[],"sourceRoot":""}
