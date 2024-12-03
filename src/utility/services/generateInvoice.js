@@ -6,7 +6,8 @@ const generateHtml = (dd) => {
       total: dd?.total,
     },
     storeData: dd?.store,
-    customerName: dd?.customer_name || '',
+    customer_name: dd?.customer_name || '',
+    customer_phone: dd?.customer_phone || '',
     orderNumber: dd?.orderNumber,
     cashier: dd?.user.name,
     tableNumber: dd?.tableNumber || '',
@@ -31,7 +32,8 @@ const generateHtml = (dd) => {
             </tr>
         `;
   });
-
+  const phone = `
+                <div class="thora-khisakle">Phone: ${data.customer_phone}</div>`;
   const gstAmount = (subtotal * orderDetails.tax) / 100;
   const gstPercent = (orderDetails.tax / 2).toFixed(1);
   const grandTotal = subtotal + gstAmount;
@@ -75,11 +77,9 @@ const generateHtml = (dd) => {
               white-space: normal;
             }
             .bill-container {
-                width: 80mm;
-                // margin: 40px auto;
-                padding: 10px;
+                width: 84mm;
+                padding: 13px;
                 background-color: #fff;
-                border: 1px solid #000;
             }
             .bill-header,
             .bill-footer {
@@ -174,8 +174,9 @@ const generateHtml = (dd) => {
             <hr>
 
             <div class="bill-details">
-                <div class="thora-khisakle">Name: ${data.customerName}</div>
+                <div class="thora-khisakle">Name: ${data.customer_name}</div>
             </div>
+            ${phone ? phone : ''}
             <hr>
 
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
@@ -307,10 +308,8 @@ const generateKot = (dd) => {
             }
             .bill-container {
                 width: 80mm;
-                // margin: 40px auto;
                 padding: 10px;
                 background-color: #fff;
-                border: 1px solid #000;
             }
             .bill-header,
             .bill-footer {
@@ -395,14 +394,6 @@ const generateKot = (dd) => {
     </head>
         <body>
             <div class="bill-container">
-                <div class="bill-header">
-                    <div class="store-name thora-khisakle">${storeData.name}</div>
-                    <div class="store-address thora-khisakle address-khisak">${storeData.address}</div>
-                    <div class="store-phone thora-khisakle">Phone: ${storeData.phoneNumber}</div>
-                    <div class="gst thora-khisakle">GSTIN: ${gstNumber}</div>
-                </div>
-    
-                <hr>
     
                 <div class="bill-details">
                    <strong> <div class="thora-khisakle ">Kitchen Order Ticket : ${data.orderNumber}</div></strong>

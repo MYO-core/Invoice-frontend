@@ -69,6 +69,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       setLoading(true);
       await getOrder(tableData.current_order);
       const string = await generateHtml(orderDetails);
+      console.log('===', string);
       const tempDiv = document.createElement('div');
       tempDiv.style.position = 'absolute';
       // tempDiv.style.visibility = 'hidden';
@@ -114,7 +115,6 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       setLoading(true);
       await getOrder(tableData.current_order);
       const string = await generateKot(orderDetails);
-      console.log('==', string);
       const tempDiv = document.createElement('div');
       tempDiv.style.position = 'absolute';
       // tempDiv.style.visibility = 'hidden';
@@ -226,6 +226,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
         let ooo = {
           orderNumber: d.id,
           customer_name: d.customer_name,
+          customer_phone: d.customer_phone,
           tableNumber: tableData.table_number,
           items: d.order_items,
           subtotal: d.total_price || 0,
@@ -299,6 +300,13 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
               </Col>
               <Col span={12}>
                 <Form.Item label="Customer Name" name="customer_name">
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item label="Customer Phone" name="customer_phone">
                   <Input />
                 </Form.Item>
               </Col>
