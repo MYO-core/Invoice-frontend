@@ -26,6 +26,8 @@ const Products = lazy(() => import('../../container/products'));
 const Stores = lazy(() => import('../../container/stores'));
 const CustomerNew = lazy(() => import('../../container/customerNew'));
 const Teachers = lazy(() => import('../../container/profileNew'));
+const TermsAndConditions = lazy(() => import('../../container/pages/TermsConditions'));
+const Jobs = lazy(() => import('../../container/reports/index'));
 const NotFound = lazy(() => import('../../container/pages/404'));
 
 const Admin = React.memo(() => {
@@ -64,6 +66,8 @@ const Admin = React.memo(() => {
         <Route index path="tables/*" element={<Tables />} />
         <Route index path="items/*" element={<Items />} />
         <Route index path="orders/*" element={<Orders />} />
+        <Route index path="reports/*" element={<Jobs />} />
+        <Route index path="terms/*" element={<TermsAndConditions />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

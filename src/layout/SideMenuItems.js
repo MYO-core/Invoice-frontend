@@ -157,6 +157,14 @@ function MenuItems({ toggleCollapsed }) {
           ),
           key: 'orders',
         },
+        {
+          label: (
+            <NavLink onClick={toggleCollapsed} to={'/reports'}>
+              {t('reports')}
+            </NavLink>
+          ),
+          key: 'reports',
+        },
       ],
     },
   ];
