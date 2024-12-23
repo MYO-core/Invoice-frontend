@@ -12,9 +12,7 @@ import { Cards } from '../../components/cards/frame/cards-frame';
 const { RangePicker } = DatePicker;
 function GalleryTwo() {
   const [allUsers, setAllUsers] = useState([]);
-  const [dates, setDates] = useState([]);
-  const [dateString, setDateString] = useState({});
-  const [selectedRange, setSelectedRange] = useState([null, null]);
+  const [dateString, setDateString] = useState('today');
 
   const columns = [
     {
@@ -42,35 +40,11 @@ function GalleryTwo() {
       width: 150,
     },
   ];
-  // const handleDateRangeChange = (dates, dateStrings) => {
-  //   setSelectedRange([moment(dates), moment(dateStrings)]);
-  //   // setDates(dateStrings);
-  // };
-  const getDateRange = (rangeType) => {
-    let startDate, endDate;
-
-    if (rangeType === 'today') {
-      startDate = moment().startOf('day').format('YYYY-MM-DD');
-      endDate = moment().endOf('day').format('YYYY-MM-DD');
-    } else if (rangeType === 'this-week') {
-      startDate = moment().startOf('week').startOf('day').format('YYYY-MM-DD');
-      endDate = moment().endOf('week').endOf('day').format('YYYY-MM-DD');
-    } else if (rangeType === 'this-month') {
-      startDate = moment().startOf('month').startOf('day').format('YYYY-MM-DD');
-      endDate = moment().endOf('month').endOf('day').format('YYYY-MM-DD');
-    } else {
-      startDate = moment().startOf('day').format('YYYY-MM-DD');
-      endDate = moment().endOf('day').format('YYYY-MM-DD');
-    }
-
-    return { startTime: startDate, endTime: endDate };
-  };
   const handleTabChange = (key) => {
-    const range = getDateRange(key);
-    setDateString(range);
+    setDateString(key);
   };
-  const getAllUsers = (dateString) => {
-    getAllCms(dateString)
+  const getAllUsers = () => {
+    getAllCms({ dateString })
       .then((res) => {
         if (res) {
           setAllUsers(res?.data);
@@ -80,7 +54,7 @@ function GalleryTwo() {
   };
 
   useEffect(() => {
-    getAllUsers(dateString);
+    getAllUsers();
   }, [dateString]);
   const PageRoutes = [
     {
@@ -114,8 +88,8 @@ function GalleryTwo() {
                 >
                   <Tabs defaultActiveKey="today" onChange={handleTabChange}>
                     <Tabs.TabPane tab="Today" key="today" />
-                    <Tabs.TabPane tab="This Week" key="this-week" />
-                    <Tabs.TabPane tab="This Month" key="this-month" />
+                    <Tabs.TabPane tab="This Week" key="week" />
+                    <Tabs.TabPane tab="This Month" key="month" />
                     {/* <Tabs.TabPane tab="Custom Range" key="custom">
                       <Row gutter={[16, 16]} align="middle">
                         <Col xs={24} sm={12} md={8} lg={6}>
@@ -129,7 +103,7 @@ function GalleryTwo() {
                       </Row>
                     </Tabs.TabPane> */}
                   </Tabs>
-                  <ExportButtonPageHeader />
+                  {/* <ExportButtonPageHeader /> */}
                   {/* <div style={{ marginTop: 20 }}>
                     <p>
                       Selected Range:{' '}

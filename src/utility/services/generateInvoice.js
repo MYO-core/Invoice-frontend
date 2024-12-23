@@ -32,8 +32,7 @@ const generateHtml = (dd) => {
             </tr>
         `;
   });
-  const phone = `
-                <div class="thora-khisakle bill-details">Phone: ${data.customer_phone}</div>`;
+  const phone = data.customer_phone ? `<div class="thora-khisakle">Phone: ${data.customer_phone}</div>` : '';
   const gstAmount = (subtotal * orderDetails.tax) / 100;
   const gstPercent = (orderDetails.tax / 2).toFixed(1);
   const grandTotal = subtotal + gstAmount;
@@ -175,8 +174,8 @@ const generateHtml = (dd) => {
 
             <div class="bill-details">
                 <div class="thora-khisakle">Name: ${data.customer_name}</div>
+                ${data.customer_phone ? phone : ''}
             </div>
-            ${data.customer_phone ? phone : ''}
             <hr>
 
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
