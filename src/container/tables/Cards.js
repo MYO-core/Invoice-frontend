@@ -1,7 +1,15 @@
 import React from 'react';
 import { Card, Col, Row, Tag, Typography, Collapse, Button, Popconfirm } from 'antd';
 
-import { EditFilled, DeleteFilled, PlusOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  EditFilled,
+  DeleteFilled,
+  PlusOutlined,
+  EyeOutlined,
+  PrinterOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 const { Text, Title } = Typography;
 const { Panel } = Collapse;
 
@@ -62,6 +70,38 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
                   onClick={() => setIsEditCms({ isOpen: true, cmsId: room?.id })}
                   style={{ cursor: 'pointer', color: '#1890ff' }}
                 />
+                <div style={{ justifyContent: 'center' }}>
+                  <Button
+                    icon={<PlusOutlined />}
+                    size="small"
+                    onClick={() => handleAddItem(table.id)}
+                    style={{ backgroundColor: '#4CAF50', color: 'white' }}
+                  />
+                  <Button
+                    icon={<PrinterOutlined />}
+                    size="small"
+                    onClick={() => handlePrint(table.id)}
+                    style={{ backgroundColor: '#2196F3', color: 'white' }}
+                  />
+                  <Button
+                    icon={<EditOutlined />}
+                    size="small"
+                    onClick={() => setIsEditCms({ isOpen: true, cmsId: room?.id })}
+                    style={{ backgroundColor: '#FF9800', color: 'white' }}
+                  />
+                  <Popconfirm
+                    title="Are you sure to delete this table?"
+                    onConfirm={() => handleDelete(table.id)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      icon={<DeleteOutlined />}
+                      size="small"
+                      style={{ backgroundColor: '#f44336', color: 'white' }}
+                    />
+                  </Popconfirm>
+                </div>
               </div>
             </Card>
           </Col>
