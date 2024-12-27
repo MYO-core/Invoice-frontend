@@ -23,8 +23,9 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
             <Card
               bordered={true}
               style={{
-                border: '1px solid #a158e0',
+                border: room.current_order ? '2px solid #72489c' : '2px solid #3d9943',
                 width: '180px',
+                // background: room.current_order ? '#8eab8e' : '#b58584',
               }}
             >
               <div className="flex justify-between items-center">
@@ -44,22 +45,16 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
                 </span>
               </div>
               <div className="flex justify-between mt-2">
-                <Button
-                  icon={<PrinterOutlined />}
-                  size="small"
-                  onClick={() => handlePrint(room.id)}
-                  style={{
-                    backgroundColor: '#2196F3',
-                    color: 'white',
-                  }}
-                />
                 <div style={{ justifyContent: 'center' }}>
                   <Button
-                    icon={<PlusOutlined />}
+                    icon={room.current_order ? <EyeOutlined /> : <PlusOutlined />}
                     size="small"
-                    onClick={() => handleAddItem(room.id)}
+                    onClick={() => {
+                      setVisible(true);
+                      setTableData(room);
+                    }}
                     style={{
-                      backgroundColor: '#4CAF50',
+                      backgroundColor: room.current_order ? '#7090b8' : '#4CAF50',
                       color: 'white',
                     }}
                   />
@@ -73,6 +68,17 @@ const RoomCards = ({ allData, setIsEditCms, setTableData, setVisible }) => {
                     }}
                   />
                 </div>
+                {/* <Button
+                  icon={<PrinterOutlined />}
+                  size="small"
+                  onClick={() => handlePrint(room.id)}
+                  style={{
+                    backgroundColor: '#2196F3',
+                    color: 'white',
+                    display: room.current_order ? 'block' : 'none',
+                  }}
+                /> */}
+                <Tag color={room.current_order ? 'blue' : 'green'}>{room.current_order ? 'Running' : 'Free'}</Tag>
               </div>
             </Card>
           </Col>
