@@ -39,7 +39,7 @@ const Cms = () => {
   ];
 
   const getAllData = ({ search, type, isAvailable }) => {
-    getAllTables({ start, limit: 12, search, type, isAvailable, store_id: currentStore })
+    getAllTables({ start, limit: 20, search, type, isAvailable, store_id: currentStore })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
@@ -99,8 +99,8 @@ const Cms = () => {
                         onChange={handleStatusChange}
                       >
                         <Option value="">All</Option>
-                        <Option value="booked">Booked</Option>
-                        <Option value="available">Available</Option>
+                        <Option value="booked">Running</Option>
+                        <Option value="available">Free</Option>
                         <Option value="service">Service</Option>
                         <Option value="preparing">Preparing</Option>
                       </Select>
@@ -172,7 +172,7 @@ const Cms = () => {
         placement="right"
         onClose={onClose}
         open={visible}
-        width={window.innerWidth < 768 ? 300 : 600}
+        width={window.innerWidth < 768 ? 300 : 700}
       >
         <AddOrder
           setVisible={setVisible}

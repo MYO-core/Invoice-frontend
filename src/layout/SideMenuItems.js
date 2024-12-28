@@ -1,13 +1,16 @@
-import { Menu } from 'antd';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Menu } from 'antd';
 import { NavLink } from 'react-router-dom';
-import UilEllipsisV from '@iconscout/react-unicons/icons/uil-ellipsis-v';
-import propTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import { UilEllipsisV } from '@iconscout/react-unicons';
+import { HomeOutlined, UserOutlined, ShopOutlined, TableOutlined, CalendarOutlined } from '@ant-design/icons'; // Example icons
+import PropTypes from 'prop-types';
+import { currentUser } from '../utility/services/auth';
 
 function MenuItems({ toggleCollapsed }) {
   const { t } = useTranslation();
+  const [user, setUser] = useState({});
 
   const { topMenu } = useSelector((state) => ({
     topMenu: state.ChangeLayoutMode.topMenu,
@@ -25,20 +28,26 @@ function MenuItems({ toggleCollapsed }) {
   };
 
   const onClick = () => {
-    setOpenKeys([]);
+    // setOpenKeys([]);
   };
 
   const items = [
     {
       label: (
-        <NavLink onClick={toggleCollapsed} to={'/dashboard'}>
+        <NavLink onClick={toggleCollapsed} to={'/dashboard'} style={{ marginLeft: '-15px' }}>
+          <HomeOutlined style={{ marginRight: 8 }} />
           {t('dashboard')}
         </NavLink>
       ),
       key: 'dashboard',
     },
-    {
-      label: t('Admin'),
+    user.isSuper && {
+      label: (
+        <>
+          <UserOutlined style={{ marginRight: 8 }} />
+          {t('Admin')}
+        </>
+      ),
       key: 'admin',
       children: [
         {
@@ -75,8 +84,13 @@ function MenuItems({ toggleCollapsed }) {
         },
       ],
     },
-    {
-      label: t('Inventory'),
+    user.inventory && {
+      label: (
+        <>
+          <ShopOutlined style={{ marginRight: 8 }} />
+          {t('Inventory')}
+        </>
+      ),
       key: 'Store',
       children: [
         {
@@ -97,8 +111,13 @@ function MenuItems({ toggleCollapsed }) {
         },
       ],
     },
-    {
-      label: t('Bookings'),
+    user.hotel && {
+      label: (
+        <>
+          <CalendarOutlined style={{ marginRight: 8 }} />
+          {t('Bookings')}
+        </>
+      ),
       key: 'Book',
       children: [
         {
@@ -129,8 +148,13 @@ function MenuItems({ toggleCollapsed }) {
       ],
     },
 
-    {
-      label: t('Restaurant'),
+    user.restraunt && {
+      label: (
+        <>
+          <TableOutlined style={{ marginRight: 8 }} />
+          {t('Restaurant')}
+        </>
+      ),
       key: 'Restraunt',
       children: [
         {
@@ -169,6 +193,12 @@ function MenuItems({ toggleCollapsed }) {
     },
   ];
 
+  useEffect(() => {
+    currentUser().then((res) => {
+      const data = res.data;
+      setUser(data);
+    });
+  }, []);
   return (
     <Menu
       onOpenChange={onOpenChange}
@@ -185,8 +215,8 @@ function MenuItems({ toggleCollapsed }) {
   );
 }
 
-MenuItems.propTypes = {
-  toggleCollapsed: propTypes.func,
-};
+// MenuItems.propTypes = {
+//   toggleCollapsed: PropTypes.func,
+// };
 
 export default MenuItems;
