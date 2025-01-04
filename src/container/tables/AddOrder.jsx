@@ -14,6 +14,7 @@ import {
   AutoComplete,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
 import { MinusCircleOutlined } from '@ant-design/icons';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -21,6 +22,7 @@ import OrderPDF from './Invoice';
 import { addCms, getSingleCms, updateCms } from '../../utility/services/orders';
 import { getAllCms } from '../../utility/services/restroItems';
 import { generateHtml, generateKot } from '../../utility/services/generateInvoice';
+import { currentStoreData } from '../../globalStore';
 const { Option } = Select;
 
 const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllCms }) => {
@@ -29,6 +31,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
   const [bill, setBill] = useState(false);
   const [search, setSearch] = useState('');
   const [deletedItem, setDeletedItem] = useState([]);
+  const [storeData, setStoreData] = useAtom(currentStoreData);
   const [orderDetails, setOrderDetails] = useState({
     orderNumber: '',
     tableNumber: '',
@@ -272,6 +275,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
     total -= dp;
     form.setFieldValue('total_price', total);
   };
+  console.log('===', storeData);
   return (
     <>
       <Spin spinning={loading}>
@@ -323,12 +327,12 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                 </Form.Item>
               </Col>
               <Col xs={12} sm={12} md={12} lg={8}>
-                <Form.Item label="Discount Percent" name="discount_precent" initialValue={0}>
+                <Form.Item label="Discount Percent" name="discount_precent" initialValue={storeData.discount || 0}>
                   <InputNumber min={0} max={100} precision={2} style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
               <Col xs={12} sm={12} md={12} lg={8}>
-                <Form.Item label="Gst" name="tax_precent" initialValue={5}>
+                <Form.Item label="Gst" name="tax_precent" initialValue={storeData.gst || 5}>
                   <InputNumber min={0} max={100} precision={2} style={{ width: '100%' }} />
                 </Form.Item>
               </Col>

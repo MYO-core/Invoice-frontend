@@ -129,9 +129,7 @@ client.interceptors.response.use(
      */
     const { response } = error;
     const originalRequest = error.config;
-    if (response?.status === 400) {
-      message.warning(response.data.message);
-    } else if (response?.status === 401) {
+    if (response?.status === 401) {
       message.warning(response.data.message);
       clearAll();
       window.location.replace('/');

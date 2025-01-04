@@ -7,9 +7,7 @@ const { Option } = Select;
 
 const AddOrder = ({ setIsAddUsers, isEditUsers, setIsEditUsers, getAllUsers }) => {
   const [loading, setLoading] = useState(false);
-
   const [form] = Form.useForm();
-
   const onFinish = (values) => {
     // console.log(values);
 
@@ -23,10 +21,11 @@ const AddOrder = ({ setIsAddUsers, isEditUsers, setIsEditUsers, getAllUsers }) =
         .then((res) => {
           setIsEditUsers({ isOpen: false, userId: '' });
           getAllUsers();
-          message.success('Invoice updated successfully');
+          message.success('Updated successfully');
         })
         .catch((err) => {
           console.log(err);
+          message.error(err);
         });
     } else {
       addOrg({
@@ -53,13 +52,17 @@ const AddOrder = ({ setIsAddUsers, isEditUsers, setIsEditUsers, getAllUsers }) =
       getSingleOrg({ id: isEditUsers?.userId })
         .then((res) => {
           const data = res.data;
+          if (res.status === 400) {
+            message.warning('Something went wrong');
+            return;
+          }
           data.date = moment(data.date);
-          console.log('data', data);
           form.setFieldsValue(data);
           setLoading(false);
         })
         .catch((err) => {
           console.log('err', err);
+          message.warning('Something went wrong');
           setLoading(false);
         });
     }
@@ -142,11 +145,45 @@ const AddOrder = ({ setIsAddUsers, isEditUsers, setIsEditUsers, getAllUsers }) =
               </Form.Item>
             </Col>
           </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Default Discount"
+                name="discount"
+                rules={[
+                  {
+                    required: true,
+                    message: 'discount is required!',
+                  },
+                ]}
+                initialValue={0}
+              >
+                <InputNumber />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Gst %"
+                name="gst"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Gst is required!',
+                  },
+                ]}
+                initialValue={0}
+              >
+                <InputNumber min={0} max={100} />
+              </Form.Item>
+            </Col>
+          </Row>
 
           <div className="flex justify-end gap-2 mt-2">
             <Button
               onClick={() => {
-                // Add your onCancel logic here
+                form.resetFields();
+                setIsAddUsers(false);
+                setIsEditUsers({ isOpen: false, courseId: '' });
               }}
             >
               Cancel
