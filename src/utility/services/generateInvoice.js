@@ -25,7 +25,7 @@ const generateHtml = (dd) => {
     quantity += item.quantity;
     itemsRows += `
             <tr class=" bill-details-new">
-                <td>${item.item_name}</td>
+                <td style="text-align: left;">${item.item_name}</td>
                 <td>${item.quantity}</td>
                 <td>₹${item.price.toFixed(2)}</td>
                 <td>₹${amount.toFixed(2)}</td>
