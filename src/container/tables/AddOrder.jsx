@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import OrderPDF from './Invoice';
@@ -43,33 +43,6 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
     total: 0,
   });
   const [form] = Form.useForm();
-
-  const freeTable = () => {
-    updateCms({
-      id: tableData.current_order,
-      body: { free_table: true, table_id: tableData.id.toString() },
-    })
-      .then((res) => {
-        updateTableStatus(null, 'available');
-        message.success('Table status updated.');
-      })
-      .catch((err) => {
-        message.error('Something Went Wrong');
-        console.log('err :>> ', err);
-      });
-  };
-
-  const updateTableStatus = (orderId, status) => {
-    let dd = allCms.map((d) => {
-      if (d.id === tableData.id) {
-        d.status = status;
-        d.current_order = orderId;
-        return d;
-      }
-      return d;
-    });
-    setAllCms(dd);
-  };
 
   const generatePdf = async () => {
     try {
@@ -147,7 +120,9 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
   const onFinish = (values) => {
     const body = values;
     body.table_id = body.table_id.toString();
-
+    delete body.select_item;
+    delete body.select_item_name;
+    delete body.select_item_price;
     if (tableData.current_order) {
       body.order_items = [...body.order_items, ...deletedItem];
       updateCms({
@@ -369,12 +344,12 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                   </Form.Item>
                 </Col>
                 <Col xs={12} sm={12} md={7}>
-                  <Form.Item label="Item Name" name="select_item_name">
+                  <Form.Item label="Name" name="select_item_name">
                     <Input />
                   </Form.Item>
                 </Col>
                 <Col xs={12} sm={12} md={4}>
-                  <Form.Item label="Item Quantity" name="select_item_quantity">
+                  <Form.Item label="Quantity" name="select_item_quantity">
                     <InputNumber
                       min={0}
                       precision={0}
@@ -420,7 +395,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                     <span>Action</span>
                   </Col>
                 </Row>
-                <hr style={{ borderColor: '#e8e8e8', margin: 0 }} /> {/* Reduced space after hr */}
+                <hr style={{ borderColor: '#e8e8e8', marginTop: '10px' }} /> {/* Reduced space after hr */}
               </div>
               <Form.List name="order_items">
                 {(fields, { remove }) => (
@@ -531,6 +506,12 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                     </Select>
                   </Form.Item>
                 </Col>
+                <Col xs={12} sm={12} md={16} style={{ display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
+                  <div style={{ textAlign: 'left' }}>
+                    <InfoCircleOutlined style={{ fontSize: '18px', color: '#000', marginRight: '4px' }} />
+                    <a style={{ color: '#000' }}>Tip: Change the status to 'Paid' to free the table..</a>
+                  </div>
+                </Col>
               </Row>
 
               <div className="flex justify-end gap-2 mt-5">
@@ -550,9 +531,6 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
                 </Button>
                 <Button type="primary" htmlType="submit" loading={loading}>
                   Submit
-                </Button>
-                <Button onClick={freeTable} type="ghost" htmlType="button" loading={loading}>
-                  Free Table
                 </Button>
               </div>
             </div>
