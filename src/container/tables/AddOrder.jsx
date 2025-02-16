@@ -116,6 +116,17 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       console.log(e);
     }
   };
+  const updateTableStatus = (orderId, status) => {
+    let dd = allCms.map((d) => {
+      if (d.id === tableData.id) {
+        d.status = status;
+        d.current_order = orderId;
+        return d;
+      }
+      return d;
+    });
+    setAllCms(dd);
+  };
 
   const onFinish = (values) => {
     const body = values;
