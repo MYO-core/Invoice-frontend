@@ -47,9 +47,13 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
   const generatePdf = async () => {
     try {
       setLoading(true);
+      if (!tableData.current_order) {
+        message.warning('Please save the order first');
+        setLoading(false);
+        return;
+      }
       await getOrder(tableData.current_order);
       const string = await generateHtml(orderDetails);
-      console.log('===', string);
       const tempDiv = document.createElement('div');
       tempDiv.style.position = 'absolute';
       document.body.appendChild(tempDiv);
@@ -84,6 +88,12 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
   const generateKotPdf = async () => {
     try {
       setLoading(true);
+      if (!tableData.current_order) {
+        message.warning('Please save the order first');
+        setLoading(false);
+        return;
+      }
+
       await getOrder(tableData.current_order);
       const string = await generateKot(orderDetails);
       const tempDiv = document.createElement('div');
@@ -134,6 +144,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
     delete body.select_item;
     delete body.select_item_name;
     delete body.select_item_price;
+    delete body.select_item_quantity;
     if (tableData.current_order) {
       body.order_items = [...body.order_items, ...deletedItem];
       updateCms({
@@ -273,6 +284,12 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
       form.setFieldsValue({
         order_items: [...orderItems],
       });
+      form.setFieldsValue({
+        select_item_name: null,
+        select_item_price: null,
+        select_item_quantity: null,
+        select_item: null,
+      });
       getAllItems();
     }
   };
@@ -281,6 +298,7 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
     form.setFieldsValue({
       select_item_name: selectedItem.name,
       select_item_price: selectedItem.price,
+      select_item_quantity: 1,
     });
   };
   return (
