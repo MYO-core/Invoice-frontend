@@ -26,7 +26,11 @@ const Products = lazy(() => import('../../container/products'));
 const Stores = lazy(() => import('../../container/stores'));
 const CustomerNew = lazy(() => import('../../container/customerNew'));
 const Teachers = lazy(() => import('../../container/profileNew'));
-const TermsAndConditions = lazy(() => import('../../container/pages/TermsConditions'));
+const TermsAndConditions = lazy(() => import('../../container/pages/Faq'));
+const Project = lazy(() => import('../../container/project/Project'));
+const calender = lazy(() => import('../../container/calendar/Calendar'));
+const FaQs = lazy(() => import('../../container/pages/Faq'));
+const Notes = lazy(() => import('../../container/toDo/ToDo'));
 const Jobs = lazy(() => import('../../container/reports/index'));
 const NotFound = lazy(() => import('../../container/pages/404'));
 
@@ -68,6 +72,7 @@ const Admin = React.memo(() => {
         <Route index path="orders/*" element={<Orders />} />
         <Route index path="reports/*" element={<Jobs />} />
         <Route index path="terms/*" element={<TermsAndConditions />} />
+        <Route index path="faqs/*" element={<FaQs />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
