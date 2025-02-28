@@ -105,9 +105,9 @@ const AddRoom = ({ tableData, setVisible, visible, currentStore, allCms, setAllC
         const imgWidth = 80;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        const pdf = new jsPDF('p', 'mm', [imgWidth, imgHeight]);
+        const pdf = new jsPDF('p', 'mm', [imgWidth, imgHeight > 80 ? imgHeight : 80]);
 
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight > 80 ? imgHeight : 80);
 
         const pdfOutput = pdf.output('blob');
         const url = URL.createObjectURL(pdfOutput);

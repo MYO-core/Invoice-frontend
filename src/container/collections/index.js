@@ -171,7 +171,7 @@ function ProjectLists() {
             </Col>
             <Col xs={24} className="pb-30">
               <PaginationStyle>
-                {list.length ? (
+                {list?.length ? (
                   <Pagination
                     onChange={(page, pageSize) => {
                       setStart(pageSize * (page - 1));
