@@ -10,7 +10,7 @@ const hostname = () => {
       hostUrl = 'http://localhost:4000/api/v1';
       break;
     default:
-      hostUrl = 'http://invoice-api.thepublicpoints.com/';
+      hostUrl = 'https://invoice-api.thepublicpoints.com/';
       break;
   }
   return hostUrl;
