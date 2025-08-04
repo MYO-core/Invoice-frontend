@@ -1,0 +1,44 @@
+App.css body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f3f4f6;
+  margin: 0;
+  padding: 0;
+  color: black;
+}
+
+.order-header {
+  text-align: center;
+  color: #333;
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+.item-search {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.input-field {
+  width: 30%;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ant-table-tbody > tr:hover {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+.total-row {
+  font-weight: bold;
+  font-size: 18px;
+  text-align: right;
+  margin-top: 20px;
+}
+.total-row-2 {
+  font-size: 14px;
+  text-align: right;
+  margin-top: 20px;
+}

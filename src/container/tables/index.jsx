@@ -39,7 +39,7 @@ const Cms = () => {
   ];
 
   const getAllData = ({ search, type, isAvailable }) => {
-    getAllTables({ start, limit: 20, search, type, isAvailable, store_id: currentStore })
+    getAllTables({ start, limit: 50, search, type, isAvailable, store_id: currentStore })
       .then((res) => {
         if (res) {
           setAllCms(res?.data?.rows);
@@ -130,10 +130,11 @@ const Cms = () => {
                 setTableData={setTableData}
                 setVisible={setVisible}
               />
+
               <div className="mt-2 flex justify-end">
                 <Pagination
                   // current={1}
-                  pageSize={12}
+                  pageSize={40}
                   total={totalCount} // Total number of items
                   onChange={changeStart}
                   showSizeChanger={false} // Allows changing the number of items per page
