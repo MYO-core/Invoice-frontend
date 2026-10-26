@@ -18,14 +18,20 @@ import { ReactComponent as MySVG } from '../static/img/icon/left-bar.svg';
 const { theme } = require('../config/theme/themeVariables');
 
 const { Header, Sider, Content } = Layout;
-const classNameForIcon = window.length > 991 ? 'justify-between' : '';
+
+// Single source of truth for the mobile/sidebar breakpoints - every
+// responsive check in this file reads from these instead of re-reading
+// window.innerWidth ad hoc, which used to drift out of sync between checks.
+const MOBILE_BREAKPOINT = 991;
+const SIDER_AUTO_COLLAPSE_BREAKPOINT = 1200;
 
 const ThemeLayout = (WrappedComponent) => {
   class LayoutComponent extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        collapsed: false,
+        collapsed: window.innerWidth <= SIDER_AUTO_COLLAPSE_BREAKPOINT,
+        isMobile: window.innerWidth <= MOBILE_BREAKPOINT,
         hide: true,
       };
       this.updateDimensions = this.updateDimensions.bind(this);
@@ -42,12 +48,13 @@ const ThemeLayout = (WrappedComponent) => {
 
     updateDimensions() {
       this.setState({
-        collapsed: window.innerWidth <= 1200 && true,
+        collapsed: window.innerWidth <= SIDER_AUTO_COLLAPSE_BREAKPOINT,
+        isMobile: window.innerWidth <= MOBILE_BREAKPOINT,
       });
     }
 
     render() {
-      const { collapsed, hide } = this.state;
+      const { collapsed, hide, isMobile } = this.state;
       const { layoutMode, rtl, topMenu } = this.props;
 
       const left = !rtl ? 'left' : 'right';
@@ -58,7 +65,7 @@ const ThemeLayout = (WrappedComponent) => {
       };
 
       const toggleCollapsedMobile = () => {
-        if (window.innerWidth <= 990) {
+        if (isMobile) {
           this.setState({
             collapsed: !collapsed,
           });
@@ -129,7 +136,7 @@ const ThemeLayout = (WrappedComponent) => {
             >
               <div className="flex flex-row items-center flex-1 h-full">
                 <div className=" rtl:ssm:pr-[15px] ltr:pr-5 rtl:pl-5 ltr:ssm:pl-[15px] ltr:ssm:pr-[15px] rtl:ssm::pl:[15px] ltr:pl-[30px] rtl:pr-[30px] xs:ltr:pl-[20px] xs:rtl:pr-[20px] min-w-[280px] ssm:min-w-[220px] xs:min-w-[170px] h-full grid align-middle dark:bg-[#323541]">
-                  <div className={`flex items-center ${window.innerWidth > 991 ? 'justify-between' : ''}`}>
+                  <div className={`flex items-center ${!isMobile ? 'justify-between' : ''}`}>
                     <Link to="/admin">
                       <img
                         style={{
@@ -144,7 +151,7 @@ const ThemeLayout = (WrappedComponent) => {
                         alt=""
                       />
                     </Link>
-                    {!topMenu || window.innerWidth <= 991 ? (
+                    {!topMenu || isMobile ? (
                       <Button
                         type="link"
                         className=" bg-transparent border-none dark:border-transparent dark:bg-transparent dark:text-white60 dark:hover:text-primary text-[#525768] hover:text-primary"
@@ -156,9 +163,9 @@ const ThemeLayout = (WrappedComponent) => {
                   </div>
                 </div>
                 <div className="flex items-center justify-end flex-auto ltr:mr-[10px] rtl:ml-[10px] [&>div:first-child]:flex [&>div]:items-center ">
-                  {topMenu && window.innerWidth > 991 && <TopMenu />}
+                  {topMenu && !isMobile && <TopMenu />}
                   <div className="flex flex-row items-center md:hidden">
-                    {topMenu && window.innerWidth > 991 ? (
+                    {topMenu && !isMobile ? (
                       <TopMenuSearch>
                         <div className="flex top-right-wrap">
                           {/* <CustomizerWrap rtl={rtl} /> */}
@@ -190,10 +197,10 @@ const ThemeLayout = (WrappedComponent) => {
               </Col>
             </Row>
             <Layout>
-              {!topMenu || window.innerWidth <= 991 ? (
+              {!topMenu || isMobile ? (
                 <ThemeProvider theme={theme}>
                   <Sider
-                    width={280}
+                    width={240}
                     style={SideBarStyle}
                     collapsed={collapsed}
                     theme={layoutMode === 'lightMode' ? 'light' : 'dark'}
@@ -208,7 +215,7 @@ const ThemeLayout = (WrappedComponent) => {
                       renderView={renderView}
                       renderTrackVertical={renderTrackVertical}
                     >
-                      <SideMenuItems topMenu={topMenu} toggleCollapsed={toggleCollapsedMobile} />
+                      <SideMenuItems topMenu={topMenu} toggleCollapsed={toggleCollapsedMobile} isMobile={isMobile} />
                     </Scrollbars>
                   </Sider>
                 </ThemeProvider>
@@ -232,7 +239,7 @@ const ThemeLayout = (WrappedComponent) => {
               </Layout>
             </Layout>
           </Layout>
-          {window.innerWidth <= 991 ? (
+          {isMobile ? (
             <span className={collapsed ? 'hexadash-shade' : 'hexadash-shade show'} onClick={toggleCollapsed} />
           ) : (
             ''

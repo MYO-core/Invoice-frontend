@@ -1,3 +1,6 @@
-const esmRequire = require('esm')(module);
+require('@babel/register')({
+  presets: ['@babel/preset-env'],
+  ignore: [/node_modules/],
+});
 
-module.exports = esmRequire('./customize-cra-config');
+module.exports = require('./customize-cra-config');
