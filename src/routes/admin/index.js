@@ -15,6 +15,7 @@ const Session = lazy(() => import('../../container/session'));
 const Course = lazy(() => import('../../container/course'));
 const Subject = lazy(() => import('../../container/subject'));
 const Organisation = lazy(() => import('../../container/organisation'));
+const Tenants = lazy(() => import('../../container/tenants'));
 const Bills = lazy(() => import('../../container/bills'));
 const Components = lazy(() => import('../../container/salaryComponents'));
 const Packages = lazy(() => import('../../container/salaryPackage/index'));
@@ -58,6 +59,7 @@ const Admin = React.memo(() => {
         <Route index path="course/*" element={<Course />} />
         <Route index path="subjects/*" element={<Subject />} />
         <Route index path="company/*" element={<Organisation />} />
+        <Route index path="tenants/*" element={<Tenants />} />
         <Route index path="bills/*" element={<Bills />} />
         <Route index path="products/*" element={<Products />} />
         <Route index path="stores/*" element={<Stores />} />

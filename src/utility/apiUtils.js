@@ -6,12 +6,12 @@ import { getItem, clearAll } from './localStorageControl';
 const hostname = () => {
   let hostUrl = '';
   switch (window.location.hostname) {
-    case 'localshost': // dev
+    case 'localhost': // dev
       hostUrl = 'http://localhost:4000/api/v1';
       // hostUrl = 'https://myobackend.onrender.com/api/';
       break;
     default:
-      hostUrl = 'https://invoice-api.thepublicpoints.com/api/v1';
+      // hostUrl = 'https://invoice-api.thepublicpoints.com/api/v1';
       break;
   }
   return hostUrl;
@@ -133,6 +133,9 @@ client.interceptors.response.use(
       message.warning(response.data.message);
       clearAll();
       window.location.replace('/');
+    }
+    if (response?.status === 402) {
+      message.error(response.data.message || 'Your subscription is paused. Please contact support.', 6);
     }
     // if (response) {
     //   if (response.status === 401) {

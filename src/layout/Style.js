@@ -406,7 +406,7 @@ const LayoutContainer = Styled.div`
 
     .atbd-main-layout{
         ${({ theme }) => (!theme.rtl ? 'margin-left' : 'margin-right')}: ${({ theme }) =>
-  theme.topMenu ? 0 : '280px'};
+  theme.topMenu ? 0 : '240px'};
         margin-top: 74px;
         transition: 0.3s ease;
         
