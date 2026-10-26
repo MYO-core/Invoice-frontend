@@ -4,11 +4,18 @@ import { Menu } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { UilEllipsisV } from '@iconscout/react-unicons';
-import { HomeOutlined, UserOutlined, ShopOutlined, TableOutlined, CalendarOutlined } from '@ant-design/icons'; // Example icons
+import {
+  HomeOutlined,
+  UserOutlined,
+  ShopOutlined,
+  TableOutlined,
+  CalendarOutlined,
+  ApartmentOutlined,
+} from '@ant-design/icons'; // Example icons
 import PropTypes from 'prop-types';
 import { currentUser } from '../utility/services/auth';
 
-function MenuItems({ toggleCollapsed }) {
+function MenuItems({ toggleCollapsed, isMobile }) {
   const { t } = useTranslation();
   const [user, setUser] = useState({});
 
@@ -40,6 +47,15 @@ function MenuItems({ toggleCollapsed }) {
         </NavLink>
       ),
       key: 'dashboard',
+    },
+    user.is_platform_admin && {
+      label: (
+        <NavLink onClick={toggleCollapsed} to={'/tenants'} style={{ marginLeft: '-15px' }}>
+          <ApartmentOutlined style={{ marginRight: 8 }} />
+          {t('Tenants')}
+        </NavLink>
+      ),
+      key: 'tenants',
     },
     user.isSuper && {
       label: (
@@ -203,7 +219,7 @@ function MenuItems({ toggleCollapsed }) {
     <Menu
       onOpenChange={onOpenChange}
       onClick={onClick}
-      mode={!topMenu || window.innerWidth <= 991 ? 'inline' : 'horizontal'}
+      mode={!topMenu || isMobile ? 'inline' : 'horizontal'}
       defaultSelectedKeys={[
         mainPathSplit.length === 1 ? 'dashboard' : mainPathSplit.length === 2 ? mainPathSplit[1] : mainPathSplit[2],
       ]}
